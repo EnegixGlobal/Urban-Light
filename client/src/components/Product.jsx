@@ -22,7 +22,6 @@ import img16 from "../assets/wall light/020A3282.JPG";
 import img17 from "../assets/wall light/020A3283.JPG";
 import img18 from "../assets/wall light/020A3285.JPG";
 
-
 /* PRODUCT DATA */
 
 export const products = [
@@ -46,8 +45,6 @@ export const products = [
   { id: 18, name: "Wall Light 3285", price: 3999, oldPrice: 5999, image: img18 },
 ];
 
-
-
 const Product = () => {
 
   const navigate = useNavigate();
@@ -64,20 +61,41 @@ const Product = () => {
 
       {/* BANNER */}
 
-      <div
-        className="h-[350px] bg-cover bg-center flex items-center justify-center"
-        style={{ backgroundImage: "url('/banner/product-banner.jpg')" }}
-      >
-        <h1 className="text-5xl font-light">Products</h1>
+      <div className="h-[250px] md:h-[350px] bg-cover bg-center flex items-center justify-center">
+        <h1 className="text-3xl md:text-5xl font-light">
+          Products
+        </h1>
       </div>
 
 
-      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-4 gap-10">
+      {/* MAIN SECTION */}
+
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 grid grid-cols-1 lg:grid-cols-4 gap-10">
+
+
+        {/* SORT OPTION */}
+
+        <div className="lg:order-2">
+
+          <h3 className="text-lg mb-4">
+            Sort By
+          </h3>
+
+          <select
+            onChange={(e) => setSort(e.target.value)}
+            className="bg-black border border-gray-600 p-2 w-full"
+          >
+            <option value="">Featured</option>
+            <option value="low">Price Low → High</option>
+            <option value="high">Price High → Low</option>
+          </select>
+
+        </div>
 
 
         {/* PRODUCT GRID */}
 
-        <div className="col-span-3 grid grid-cols-3 gap-8">
+        <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-6">
 
           {sortedProducts.map((product) => (
 
@@ -92,22 +110,22 @@ const Product = () => {
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-[280px] object-cover group-hover:scale-105 transition duration-300"
+                  className="w-full h-[180px] md:h-[260px] object-cover group-hover:scale-105 transition duration-300"
                 />
 
               </div>
 
-              <h3 className="mt-4 text-lg">
+              <h3 className="mt-3 text-sm md:text-lg">
                 {product.name}
               </h3>
 
-              <div className="flex gap-3 items-center mt-1">
+              <div className="flex gap-2 items-center mt-1">
 
-                <span className="text-lg font-semibold">
+                <span className="text-sm md:text-lg font-semibold">
                   ₹{product.price}
                 </span>
 
-                <span className="line-through text-gray-400">
+                <span className="line-through text-gray-400 text-xs md:text-sm">
                   ₹{product.oldPrice}
                 </span>
 
@@ -116,26 +134,6 @@ const Product = () => {
             </div>
 
           ))}
-
-        </div>
-
-
-        {/* SORT */}
-
-        <div>
-
-          <h3 className="text-lg mb-4">
-            Sort By
-          </h3>
-
-          <select
-            onChange={(e) => setSort(e.target.value)}
-            className="bg-black border border-gray-600 p-2 w-full"
-          >
-            <option value="">Featured</option>
-            <option value="low">Price Low → High</option>
-            <option value="high">Price High → Low</option>
-          </select>
 
         </div>
 
