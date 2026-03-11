@@ -32,7 +32,7 @@ const collections = [
   { name: "Outdoor", image: outdoorImg },
   { name: "Fans", image: fansImg },
   { name: "Lamps", image: lampImg },
-  { name: "Spotlights", image: spotlightsImg },
+  { name: "Architecter Lights", image: spotlightsImg },
   { name: "Artifacts", image: artifactsImg },
 ];
 
@@ -42,7 +42,7 @@ const testimonials = [
     author: "Luxury Villa Client",
   },
   {
-    text: "Premium quality and elegant designs. Urban Lights exceeded our expectations.",
+    text: "Premium quality and elegant designs. Urban Lights Luxury exceeded our expectations.",
     author: "Interior Designer",
   },
   {
@@ -68,295 +68,294 @@ const Hero = () => {
   return (
     <>
 
-{/* ================= HERO ================= */}
+      {/* ================= HERO ================= */}
 
-{/* ================= HERO ================= */}
 
-<section
-  className="relative min-h-[80vh] md:min-h-screen flex items-center bg-cover bg-center"
-  style={{ backgroundImage: `url(${chandelier})` }}
->
-  <div className="absolute inset-0 bg-black/70"></div>
+      <section
+        className="relative min-h-[80vh] md:min-h-screen flex items-center bg-cover bg-center"
+        style={{ backgroundImage: `url(${chandelier})` }}
+      >
+        <div className="absolute inset-0 bg-black/70"></div>
 
-  {/* LEFT SIDE CONTENT */}
-  <div className="relative z-10 w-full px-8 md:px-20 lg:px-28 py-20 flex justify-start">
+        {/* LEFT SIDE CONTENT */}
+        <div className="relative z-10 w-full px-8 md:px-20 lg:px-28 py-20 flex justify-start">
 
-    <div className="max-w-xl">
+          <div className="max-w-xl">
 
-      <h1 className="text-white font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
+            <h1 className="text-white font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
 
-        Urban Lights <br />
+              Urban Lights Luxury <br />
 
-        <span className="text-[#c9a27d]">Illuminate Your</span> <br />
+              <span className="text-[#c9a27d]">Illuminate Your</span> <br />
 
-        Space in Style
+              Space in Style
 
-      </h1>
+            </h1>
 
-      {/* Button Link */}
+            {/* Button Link */}
 
-      <Link to="/products">
+            <Link to="/products">
 
-        <button className="mt-8 bg-[#c9a27d] px-8 py-3 text-black font-semibold rounded-md hover:bg-[#c9a635] transition">
+              <button className="mt-8 bg-[#c9a27d] px-8 py-3 text-black font-semibold rounded-md hover:bg-[#c9a635] transition">
 
-          Shop Chandeliers
+                Shop Chandeliers
 
-        </button>
+              </button>
 
-      </Link>
+            </Link>
 
-    </div>
+          </div>
 
-  </div>
+        </div>
 
-</section>
+      </section>
 
-{/* ================= COLLECTION ================= */}
+      {/* ================= COLLECTION ================= */}
 
-<section className="bg-black py-16 md:py-24">
+      <section className="bg-black py-16 md:py-24">
 
-<div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
 
-<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-10 place-items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-10 place-items-center">
 
-{collections.map((item, index) => (
+            {collections.map((item, index) => (
 
-<div key={index} className="text-center group cursor-pointer">
+              <div key={index} className="text-center group cursor-pointer">
 
-<div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full overflow-hidden group-hover:scale-105 transition">
+                <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full overflow-hidden group-hover:scale-105 transition">
 
-<img
-src={item.image}
-alt={item.name}
-className="w-full h-full object-cover group-hover:scale-110 transition"
-/>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition"
+                  />
 
-</div>
+                </div>
 
-<p className="mt-4 text-white text-sm tracking-wide">
-{item.name}
-</p>
+                <p className="mt-4 text-white text-sm tracking-wide">
+                  {item.name}
+                </p>
 
-</div>
+              </div>
 
-))}
+            ))}
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
 
-{/* ================= EXPLORE ================= */}
+      {/* ================= EXPLORE ================= */}
 
-<section className="bg-[#3f372e] py-20 text-white">
+      <section className="bg-[#3f372e] py-20 text-white">
 
-  <div className="max-w-7xl mx-auto px-6 text-center">
+        <div className="max-w-7xl mx-auto px-6 text-center">
 
-    <h2 className="text-3xl md:text-5xl font-serif text-[#c9a27d] mb-6">
-      Explore Urban Lights
-    </h2>
+          <h2 className="text-3xl md:text-5xl font-serif text-[#c9a27d] mb-6">
+            Explore Urban Lights Luxury
+          </h2>
 
-    <p className="max-w-xl mx-auto text-gray-300 mb-14">
-      Discover our premium lighting collection crafted for luxury interiors.
-    </p>
+          <p className="max-w-xl mx-auto text-gray-300 mb-14">
+            Discover our premium lighting collection crafted for luxury interiors.
+          </p>
 
 
-{/* MOBILE SLIDER */}
+          {/* MOBILE SLIDER */}
 
-<div className="flex md:hidden gap-6 overflow-x-auto pb-4 scroll-smooth">
+          <div className="flex md:hidden gap-6 overflow-x-auto pb-4 scroll-smooth">
 
-{exploreImages.map((img, i) => (
+            {exploreImages.map((img, i) => (
 
-<div key={i} className="min-w-[80%] bg-transparent">
+              <div key={i} className="min-w-[80%] bg-transparent">
 
-<img
-src={img}
-alt="product"
-className="w-full h-72 object-cover rounded-lg"
-/>
+                <img
+                  src={img}
+                  alt="product"
+                  className="w-full h-72 object-cover rounded-lg"
+                />
 
-<h3 className="mt-4 font-semibold">
-Luxury Lighting Collection
-</h3>
+                <h3 className="mt-4 font-semibold">
+                  Luxury Lighting Collection
+                </h3>
 
-<p className="text-sm text-gray-300 mt-2">
-Elegant lighting solutions designed for modern spaces.
-</p>
+                <p className="text-sm text-gray-300 mt-2">
+                  Elegant lighting solutions designed for modern spaces.
+                </p>
 
-<p className="mt-2 text-sm">
-Rs 1200
-</p>
+                <p className="mt-2 text-sm">
+                  Rs 1200
+                </p>
 
-</div>
+              </div>
 
-))}
+            ))}
 
-</div>
+          </div>
 
 
-{/* DESKTOP GRID */}
+          {/* DESKTOP GRID */}
 
-<div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-10">
 
-{exploreImages.map((img, i) => (
+            {exploreImages.map((img, i) => (
 
-<div key={i}>
+              <div key={i}>
 
-<img
-src={img}
-alt="product"
-className="w-full h-72 md:h-80 object-cover hover:scale-105 transition"
-/>
+                <img
+                  src={img}
+                  alt="product"
+                  className="w-full h-72 md:h-80 object-cover hover:scale-105 transition"
+                />
 
-<h3 className="mt-4 font-semibold">
-Luxury Lighting Collection
-</h3>
+                <h3 className="mt-4 font-semibold">
+                  Luxury Lighting Collection
+                </h3>
 
-<p className="text-sm text-gray-300 mt-2">
-Elegant lighting solutions designed for modern spaces.
-</p>
+                <p className="text-sm text-gray-300 mt-2">
+                  Elegant lighting solutions designed for modern spaces.
+                </p>
 
-<p className="mt-2 text-sm">
-Rs 1200
-</p>
+                <p className="mt-2 text-sm">
+                  Rs 1200
+                </p>
 
-</div>
+              </div>
 
-))}
+            ))}
 
-</div>
+          </div>
 
 
-{/* Explore More Button */}
+          {/* Explore More Button */}
 
-<div className="mt-14">
+          <div className="mt-14">
 
-<a href="/products">
+            <a href="/products">
 
-<button className="bg-[#c9a27d] text-black px-10 py-3 rounded-full font-semibold hover:bg-[#d8b48a] transition">
+              <button className="bg-[#c9a27d] text-black px-10 py-3 rounded-full font-semibold hover:bg-[#d8b48a] transition">
 
-Explore More
+                Explore More
 
-</button>
+              </button>
 
-</a>
+            </a>
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
 
-{/* ================= PREMIUM SPLIT ================= */}
+      {/* ================= PREMIUM SPLIT ================= */}
 
-<section className="flex flex-col lg:flex-row">
+      <section className="flex flex-col lg:flex-row">
 
-<div className="lg:w-1/2 bg-[#b89572] flex items-center">
+        <div className="lg:w-1/2 bg-[#b89572] flex items-center">
 
-<div className="px-8 md:px-16 py-16">
+          <div className="px-8 md:px-16 py-16">
 
-<h1 className="text-3xl md:text-5xl font-semibold text-[#3b342d] leading-tight mb-6">
+            <h1 className="text-3xl md:text-5xl font-semibold text-[#3b342d] leading-tight mb-6">
 
-Premium Lighting <br/> & Chandeliers
+              Premium Lighting <br /> & Chandeliers
 
-</h1>
+            </h1>
 
-<p className="text-[#3b342d] max-w-md">
+            <p className="text-[#3b342d] max-w-md">
 
-From modern homes to luxury hotels, we design lighting that brings warmth and elegance.
+              From modern homes to luxury hotels, we design lighting that brings warmth and elegance.
 
-</p>
+            </p>
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-<div className="lg:w-1/2">
+        <div className="lg:w-1/2">
 
-<img
-src={banner}
-className="w-full h-[350px] md:h-[500px] lg:h-[650px] object-cover"
-/>
+          <img
+            src={banner}
+            className="w-full h-[350px] md:h-[500px] lg:h-[650px] object-cover"
+          />
 
-</div>
+        </div>
 
-</section>
+      </section>
 
 
-{/* ================= TESTIMONIAL ================= */}
+      {/* ================= TESTIMONIAL ================= */}
 
-<section className="bg-[#3f372e] py-20">
+      <section className="bg-[#3f372e] py-20">
 
-<div className="max-w-4xl mx-auto px-6 text-center">
+        <div className="max-w-4xl mx-auto px-6 text-center">
 
-<h2 className="text-3xl md:text-5xl font-serif text-[#c9a27d] mb-12">
-What Our Clients Say
-</h2>
+          <h2 className="text-3xl md:text-5xl font-serif text-[#c9a27d] mb-12">
+            What Our Clients Say
+          </h2>
 
-<AnimatePresence mode="wait">
+          <AnimatePresence mode="wait">
 
-<motion.div
-key={testimonialIndex}
-initial={{ opacity: 0, y: 30 }}
-animate={{ opacity: 1, y: 0 }}
-exit={{ opacity: 0, y: -30 }}
-transition={{ duration: 0.8 }}
-className="border border-[#c9a27d]/40 p-8 text-white"
->
+            <motion.div
+              key={testimonialIndex}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.8 }}
+              className="border border-[#c9a27d]/40 p-8 text-white"
+            >
 
-<p className="italic mb-4">
+              <p className="italic mb-4">
 
-“{testimonials[testimonialIndex].text}”
+                “{testimonials[testimonialIndex].text}”
 
-</p>
+              </p>
 
-<p className="text-[#c9a27d] text-sm">
+              <p className="text-[#c9a27d] text-sm">
 
-— {testimonials[testimonialIndex].author}
+                — {testimonials[testimonialIndex].author}
 
-</p>
+              </p>
 
-</motion.div>
+            </motion.div>
 
-</AnimatePresence>
+          </AnimatePresence>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
 
-{/* ================= CTA ================= */}
+      {/* ================= CTA ================= */}
 
-<section className="bg-black py-24">
+      <section className="bg-black py-24">
 
-<div className="max-w-3xl mx-auto text-center px-6">
+        <div className="max-w-3xl mx-auto text-center px-6">
 
-<h2 className="text-3xl md:text-5xl text-white font-serif mb-6">
+          <h2 className="text-3xl md:text-5xl text-white font-serif mb-6">
 
-Let’s Light Up Your Space
+            Let’s Light Up Your Space
 
-</h2>
+          </h2>
 
-<p className="text-gray-400 mb-8">
+          <p className="text-gray-400 mb-8">
 
-Connect with us to design lighting that defines luxury and elegance.
+            Connect with us to design lighting that defines luxury and elegance.
 
-</p>
+          </p>
 
-<button className="bg-[#c9a27d] px-10 py-3 rounded-full text-black font-semibold">
+          <button className="bg-[#c9a27d] px-10 py-3 rounded-full text-black font-semibold">
 
-Contact Us
+            Contact Us
 
-</button>
+          </button>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
-</>
+    </>
   );
 };
 

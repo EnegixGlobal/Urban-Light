@@ -81,7 +81,7 @@ const Footer = () => {
               <div className="grid grid-cols-2 gap-1 text-xs opacity-80">
                 <div>Visa</div>
                 <div>Mastercard</div>
-                <div>AMEX</div>
+                <div>RuPay</div>
                 <div>PayPal</div>
               </div>
             </div>
@@ -90,7 +90,7 @@ const Footer = () => {
 
           {/* Credits */}
           <div className="flex justify-between text-xs opacity-70">
-            <p>© 2024 Urban Lights</p>
+            <p>© 2024 Urban Lights Luxury</p>
             <p>Future Things ↗</p>
           </div>
 
@@ -100,7 +100,7 @@ const Footer = () => {
       {/* Big Branding Text */}
       <div className="mt-10 text-center">
         <h1 className="text-[8vw] leading-none font-serif opacity-90">
-          Urban Lights
+          Urban Lights Luxury
         </h1>
       </div>
 
