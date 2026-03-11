@@ -45,7 +45,7 @@ const About = () => {
           </h1>
 
           <p className="text-gray-300 text-lg md:text-xl leading-relaxed max-w-2xl">
-            Urban Lights crafts bespoke lighting masterpieces designed to elevate
+            Urban Lights Luxury crafts bespoke lighting masterpieces designed to elevate
             interiors with sophistication and architectural harmony.
           </p>
         </motion.div>
@@ -66,7 +66,7 @@ const About = () => {
 
           <p className="text-gray-400 leading-relaxed">
             Founded with a passion for refined design and innovation,
-            Urban Lights began its journey with a simple yet powerful vision —
+            Urban Lights Luxury began its journey with a simple yet powerful vision —
             to redefine how spaces feel through exceptional lighting.
             <br /><br />
             By combining artistic creativity with advanced engineering,
@@ -113,7 +113,7 @@ const About = () => {
           </h2>
 
           <p className="text-gray-400 leading-relaxed">
-            Every Urban Lights product is meticulously handcrafted
+            Every Urban Lights Luxury product is meticulously handcrafted
             by skilled artisans who value precision and detail.
             <br /><br />
             From selecting premium-grade materials to the final finishing

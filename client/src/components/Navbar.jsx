@@ -15,8 +15,8 @@ const Navbar = () => {
 
         {/* LOGO */}
 
-        <Link to="/" className="text-[#c9a27d] text-lg md:text-xl font-semibold">
-          Urban Lights
+        <Link to="/" className="text-[#c9a27d] text-xl md:text-2xl font-bold tracking-widest uppercase">
+          Urban Lights Luxury
         </Link>
 
         {/* RIGHT ICONS */}
@@ -92,9 +92,9 @@ const Navbar = () => {
                 <Link
                   to="/"
                   onClick={() => setMenuOpen(false)}
-                  className="text-xl font-semibold"
+                  className="text-2xl font-bold tracking-widest uppercase"
                 >
-                  Urban Lights
+                  Urban Lights Luxury
                 </Link>
 
               </div>

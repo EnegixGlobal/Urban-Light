@@ -30,7 +30,7 @@ const Contact = () => {
             </h1>
             <p className="text-gray-400 text-lg leading-relaxed">
               Whether you're designing a home, office, or commercial space,
-              Urban Lights is here to bring brilliance and elegance to your project.
+              Urban Lights Luxury is here to bring brilliance and elegance to your project.
               Connect with us and let’s create something extraordinary together.
             </p>
           </motion.div>
@@ -44,7 +44,7 @@ const Contact = () => {
           >
             <img
               src={contactHero}
-              alt="Contact Urban Lights"
+              alt="Contact Urban Lights Luxury"
               className="w-full max-w-md md:max-w-lg object-contain drop-shadow-2xl"
             />
           </motion.div>
