@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { User, Heart, ShoppingCart } from "lucide-react";
+import { User, Heart, ShoppingCart, Lightbulb } from "lucide-react";
 
 const Navbar = () => {
 
@@ -15,7 +15,8 @@ const Navbar = () => {
 
         {/* LOGO */}
 
-        <Link to="/" className="text-[#c9a27d] text-xl md:text-2xl font-bold tracking-widest uppercase">
+        <Link to="/" className="flex items-center gap-2 text-[#c9a27d] text-xl md:text-2xl font-bold tracking-widest uppercase">
+          <Lightbulb size={24} />
           Urban Lights Luxury
         </Link>
 
@@ -92,8 +93,9 @@ const Navbar = () => {
                 <Link
                   to="/"
                   onClick={() => setMenuOpen(false)}
-                  className="text-2xl font-bold tracking-widest uppercase"
+                  className="flex items-center gap-2 text-2xl font-bold tracking-widest uppercase"
                 >
+                  <Lightbulb size={24} />
                   Urban Lights Luxury
                 </Link>
 
