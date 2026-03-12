@@ -165,48 +165,61 @@ const Hero = () => {
 
           {/* MOBILE SLIDER */}
           <div className="flex md:hidden gap-6 overflow-x-auto pb-4 scroll-smooth px-4">
-            {(featuredProducts.length > 0 ? featuredProducts : []).map((product, i) => (
-              <Link to={`/product/${product._id}`} key={product._id || i} className="min-w-[80%] bg-transparent text-left">
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="w-full h-72 object-cover rounded-lg border border-[#c9a27d]/10"
-                />
-                <h3 className="mt-4 font-semibold text-[#c9a27d]">
-                  {product.name}
-                </h3>
-                <p className="text-sm text-gray-300 mt-2 line-clamp-2">
-                  {product.description}
-                </p>
-                <p className="mt-2 text-sm font-bold italic">
-                  ₹{product.price.toLocaleString()}
-                </p>
-              </Link>
+            {exploreImages.map((img, i) => (
+              <div key={i} className="min-w-[80%] bg-transparent text-left">
+                <div className="relative overflow-hidden rounded-lg mb-4">
+                  <img
+                    src={img}
+                    alt="Luxury Lighting"
+                    className="w-full h-72 object-cover border border-[#c9a27d]/10"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#c9a27d] font-bold">
+                    product
+                  </p>
+                  <h3 className="text-lg font-light text-white tracking-wide">
+                    Luxury Lighting Collection
+                  </h3>
+                  <p className="text-sm text-gray-400 font-light leading-relaxed">
+                    Elegant lighting solutions designed for modern spaces.
+                  </p>
+                  <p className="text-base font-semibold text-[#c9a27d] pt-1">
+                    Rs 1200
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
 
 
           {/* DESKTOP GRID */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-10">
-            {(featuredProducts.length > 0 ? featuredProducts : []).map((product, i) => (
-              <Link to={`/product/${product._id}`} key={product._id || i} className="group text-left">
-                <div className="overflow-hidden h-72 md:h-80 bg-[#1a1a1a]">
+            {exploreImages.map((img, i) => (
+              <div key={i} className="group text-left">
+                <div className="overflow-hidden h-72 md:h-80 bg-[#1a1a1a] rounded-sm relative">
                   <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    src={img}
+                    alt="Luxury Lighting"
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-out grayscale-[0.2] group-hover:grayscale-0"
                   />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
                 </div>
-                <h3 className="mt-4 font-semibold text-[#c9a27d] group-hover:text-white transition-colors">
-                  {product.name}
-                </h3>
-                <p className="text-sm text-gray-400 mt-2 line-clamp-2 italic">
-                  {product.description}
-                </p>
-                <p className="mt-2 text-sm font-bold tracking-widest">
-                  ₹{product.price.toLocaleString()}
-                </p>
-              </Link>
+                <div className="mt-6 space-y-1.5">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#c9a27d] font-bold group-hover:text-white transition-colors">
+                    product
+                  </p>
+                  <h3 className="text-xl font-light text-white tracking-widest leading-tight">
+                    Luxury Lighting Collection
+                  </h3>
+                  <p className="text-sm text-gray-400 font-light leading-relaxed line-clamp-2">
+                    Elegant lighting solutions designed for modern spaces.
+                  </p>
+                  <p className="text-lg font-medium text-white/90 pt-1">
+                    Rs 1200
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
 
