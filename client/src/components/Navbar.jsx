@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Heart, ShoppingCart, Lightbulb, LogOut } from "lucide-react";
+import { User, Heart, ShoppingCart, Lightbulb, LogOut, LayoutDashboard } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser, openAuthModal } from "../redux/authSlice";
 
@@ -59,6 +59,16 @@ const Navbar = () => {
                 <span className="text-sm hidden sm:block">Logout</span>
                 <LogOut size={18} className="group-hover:translate-x-0.5 transition-transform" />
               </button>
+
+              {user?.role === 'admin' && (
+                <Link
+                  to="/admin"
+                  className="text-[#c9a27d] hover:text-white flex items-center gap-1 transition-colors"
+                  title="Admin Dashboard"
+                >
+                  <LayoutDashboard size={18} />
+                </Link>
+              )}
             </div>
           ) : (
             <button
@@ -157,6 +167,12 @@ const Navbar = () => {
                 <Link to="/cart" onClick={() => setMenuOpen(false)}>
                   Cart
                 </Link>
+
+                {user?.role === 'admin' && (
+                  <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-[#c9a27d] flex items-center gap-2">
+                    <LayoutDashboard size={24} /> Admin Dashboard
+                  </Link>
+                )}
 
                 {isAuthenticated ? (
                   <button

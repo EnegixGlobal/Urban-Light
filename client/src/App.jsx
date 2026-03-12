@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setReady, hideToast } from "./redux/authSlice";
@@ -23,11 +23,17 @@ import PublicRoute from "./components/PublicRoute";
 import AuthModal from "./components/AuthModal";
 import Toast from "./components/Toast";
 import ScrollToTop from "./components/ScrollToTop";
+import AdminRoute from "./components/AdminRoute";
+
+// Admin Pages
+import AdminDashboard from "./admin/AdminDashboard";
+import AdminOverview from "./admin/AdminOverview";
 
 function App() {
   const [wishlist, setWishlist] = useState([]);
   const dispatch = useDispatch();
-  const { toast } = useSelector((state) => state.auth);
+  const { toast, user, isAuthenticated } = useSelector((state) => state.auth);
+  const isAdmin = isAuthenticated && user?.role === 'admin';
 
   useEffect(() => {
     // Small delay or check to ensure Redux state is stabilized
@@ -49,7 +55,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
-      <Navbar />
+      {!isAdmin && <Navbar />}
       <AuthModal />
       <AnimatePresence>
         {toast.show && (
@@ -62,47 +68,68 @@ function App() {
       </AnimatePresence>
 
       <Routes>
-
-        <Route path="/" element={<Hero />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route
+          path="/"
+          element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <Hero />}
+        />
+        <Route path="/about" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <About />} />
+        <Route path="/contact" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <Contact />} />
 
         {/* Login Signup (Public Only) */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
 
         {/* Products Page */}
-        <Route path="/products" element={<Product />} />
+        <Route path="/products" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <Product />} />
 
         {/* Category */}
-        <Route path="/category/:id" element={<CategoryPage />} />
-        <Route path="/category/:id/:sub" element={<SubCategoryPage />} />
+        <Route path="/category/:id" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <CategoryPage />} />
+        <Route path="/category/:id/:sub" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <SubCategoryPage />} />
 
         {/* Product Details */}
         <Route
           path="/product/:productId"
-          element={<ProductDetails addToWishlist={addToWishlist} />}
+          element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <ProductDetails addToWishlist={addToWishlist} />}
         />
 
         {/* Wishlist (Protected) */}
         <Route
           path="/wishlist"
           element={
-            <ProtectedRoute>
-              <Wishlist
-                wishlist={wishlist}
-                removeFromWishlist={removeFromWishlist}
-              />
-            </ProtectedRoute>
+            isAdmin ? <Navigate to="/admin/dashboard" replace /> : (
+              <ProtectedRoute>
+                <Wishlist
+                  wishlist={wishlist}
+                  removeFromWishlist={removeFromWishlist}
+                />
+              </ProtectedRoute>
+            )
           }
         />
 
         {/* Cart (Protected) */}
-        <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path="/cart" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <ProtectedRoute><Cart /></ProtectedRoute>} />
+
+        {/* Admin Dashboard (Protected & Role Based) */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<AdminOverview />} />
+          <Route path="products" element={<div className="text-white">Product Management (Coming Soon)</div>} />
+          <Route path="orders" element={<div className="text-white">Order Management (Coming Soon)</div>} />
+          <Route path="customers" element={<div className="text-white">Customer Management (Coming Soon)</div>} />
+          <Route path="settings" element={<div className="text-white">Admin Settings (Coming Soon)</div>} />
+        </Route>
 
       </Routes>
 
-      <Footer />
+      {!isAdmin && <Footer />}
     </Router>
   );
 }
