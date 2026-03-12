@@ -70,17 +70,18 @@ const Contact = () => {
             <div className="space-y-6 text-gray-200">
               <div>
                 <h3 className="text-xl mb-2">Visit Our Showroom</h3>
-                <p>Dhanbad, Jharkhand, India</p>
+                <p>1st floor Skyline building, kadru, Ranchi-834002</p>
               </div>
+
 
               <div>
                 <h3 className="text-xl mb-2">Call Us</h3>
-                <p>+91 98765 43210</p>
+                <p>+91 9835905906</p>
               </div>
 
               <div>
                 <h3 className="text-xl mb-2">Email</h3>
-                <p>info@urbanlights.com</p>
+                <p>UrbanLightsranchi@gmail.com</p>
               </div>
 
               <div>

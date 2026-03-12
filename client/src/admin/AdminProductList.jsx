@@ -136,8 +136,13 @@ const AdminProductList = () => {
                                             <td className="px-8 py-6">
                                                 <span className="text-xs text-white/60 bg-white/5 px-3 py-1 rounded-full">{product.category}</span>
                                             </td>
-                                            <td className="px-8 py-6 font-medium text-white">
-                                                ₹{product.price.toLocaleString()}
+                                            <td className="px-8 py-6">
+                                                <div className="flex flex-col">
+                                                    <span className="text-white font-medium">₹{product.price.toLocaleString()}</span>
+                                                    {product.oldPrice && (
+                                                        <span className="text-[10px] text-white/30 line-through">₹{product.oldPrice.toLocaleString()}</span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-2">

@@ -42,29 +42,62 @@ const CategoryPage = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
                         {products.map((product) => (
                             <div
                                 key={product._id}
                                 onClick={() => navigate(`/product/${product._id}`)}
-                                className="cursor-pointer group"
+                                className="cursor-pointer group flex flex-col bg-[#0d0d0d]/40 backdrop-blur-sm border border-white/5 hover:border-[#c9a27d]/30 transition-all duration-500 p-3 rounded-[1.5rem]"
                             >
-                                <div className="relative overflow-hidden aspect-[3/4] bg-[#111] rounded-2xl">
+                                <div className="relative overflow-hidden aspect-square rounded-[1rem] mb-3 shadow-2xl bg-black">
                                     <img
                                         src={product.images[0]}
                                         alt={product.name}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition duration-700 ease-out"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-out grayscale-[0.2] group-hover:grayscale-0"
                                     />
-                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+                                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                                        <span className="text-[9px] uppercase font-bold tracking-[0.2em] bg-white text-black px-4 py-1.5 rounded-full whitespace-nowrap shadow-xl">
+                                            Quick View
+                                        </span>
+                                    </div>
+                                    {product.oldPrice && (
+                                        <div className="absolute top-3 right-3 bg-[#c9a27d] text-black text-[8px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg">
+                                            Sale
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="mt-6 flex justify-between items-start">
-                                    <div>
-                                        <h3 className="text-lg font-light tracking-wide group-hover:text-[#c9a27d] transition-colors">
+                                
+                                <div className="px-1 text-center space-y-2.5">
+                                    <div className="space-y-0.5">
+                                        <h3 className="text-sm md:text-base font-light tracking-wide text-white group-hover:text-[#c9a27d] transition-colors duration-300 line-clamp-1">
                                             {product.name}
                                         </h3>
-                                        <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mt-1">{product.subCategory || id}</p>
+                                        <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-[#c9a27d]/50 font-medium">
+                                            {product.subCategory || id}
+                                        </p>
                                     </div>
-                                    <p className="text-[#c9a27d] font-semibold">₹{product.price.toLocaleString()}</p>
+                                    
+                                    <div className="bg-white/[0.02] rounded-2xl p-3 border border-white/[0.03] group-hover:bg-white/[0.04] group-hover:border-[#c9a27d]/10 transition-all duration-500">
+                                        <div className="flex flex-col items-center gap-0.5">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-lg md:text-xl font-bold text-white tracking-tight">
+                                                    Rs: {product.price.toLocaleString()}
+                                                </span>
+                                                {product.oldPrice && (
+                                                    <span className="line-through text-white/10 text-[10px] md:text-xs font-light decoration-[#c9a27d]/30">
+                                                        {product.oldPrice.toLocaleString()}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            
+                                            {product.oldPrice && (
+                                                <div className="mt-1 text-green-500/90 text-[9px] font-bold uppercase tracking-widest">
+                                                    Saving {(product.oldPrice - product.price).toLocaleString()}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ))}
