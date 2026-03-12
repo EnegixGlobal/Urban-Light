@@ -28,6 +28,8 @@ import AdminRoute from "./components/AdminRoute";
 // Admin Pages
 import AdminDashboard from "./admin/AdminDashboard";
 import AdminOverview from "./admin/AdminOverview";
+import ProductUpload from "./admin/ProductUpload";
+import AdminProductList from "./admin/AdminProductList";
 
 function App() {
   const [wishlist, setWishlist] = useState([]);
@@ -121,7 +123,8 @@ function App() {
         >
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminOverview />} />
-          <Route path="products" element={<div className="text-white">Product Management (Coming Soon)</div>} />
+          <Route path="products" element={<AdminProductList />} />
+          <Route path="products/add" element={<ProductUpload />} />
           <Route path="orders" element={<div className="text-white">Order Management (Coming Soon)</div>} />
           <Route path="customers" element={<div className="text-white">Customer Management (Coming Soon)</div>} />
           <Route path="settings" element={<div className="text-white">Admin Settings (Coming Soon)</div>} />

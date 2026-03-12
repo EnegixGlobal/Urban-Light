@@ -1,19 +1,77 @@
 import { motion } from "framer-motion";
-import { TrendingUp, Users, ShoppingBag, DollarSign, Package, Star } from "lucide-react";
+import { TrendingUp, Users, ShoppingBag, DollarSign, Package, Star, Plus, Database } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const AdminOverview = () => {
+    const [statsData, setStatsData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/summary`, {
+                    withCredentials: true
+                });
+                setStatsData(response.data.stats);
+            } catch (error) {
+                console.error("Failed to fetch admin stats", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
     const stats = [
-        { label: "Total Revenue", value: "₹4,28,450", change: "+12.5%", icon: <DollarSign className="text-green-500" /> },
-        { label: "Total Orders", value: "156", change: "+8.2%", icon: <ShoppingBag className="text-blue-500" /> },
-        { label: "Active Customers", value: "842", change: "+5.1%", icon: <Users className="text-purple-500" /> },
-        { label: "Conversion Rate", value: "3.24%", change: "+2.4%", icon: <TrendingUp className="text-[#c9a27d]" /> },
+        {
+            label: "Total Revenue",
+            value: `₹${statsData?.totalRevenue?.toLocaleString() || '0'}`,
+            change: statsData?.revenueChange || "+0%",
+            icon: <DollarSign className="text-green-500" />
+        },
+        {
+            label: "Total Orders",
+            value: statsData?.totalOrders?.toString() || '0',
+            change: statsData?.ordersChange || "+0%",
+            icon: <ShoppingBag className="text-blue-500" />
+        },
+        {
+            label: "Total Products",
+            value: statsData?.totalProducts?.toString() || '0',
+            change: "Live",
+            icon: <Database className="text-purple-500" />
+        },
+        {
+            label: "Active Customers",
+            value: statsData?.totalUsers?.toString() || '0',
+            change: statsData?.usersChange || "+0%",
+            icon: <Users className="text-[#c9a27d]" />
+        },
     ];
+
+    if (loading) {
+        return (
+            <div className="h-[60vh] flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-[#c9a27d]/20 border-t-[#c9a27d] rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-10">
-            <div>
-                <h1 className="text-3xl font-light tracking-tight mb-2">Dashboard Overview</h1>
-                <p className="text-[#c9a27d]/60 text-sm tracking-widest uppercase">Performance metrics for today</p>
+            <div className="flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-light tracking-tight mb-2">Dashboard Overview</h1>
+                    <p className="text-[#c9a27d]/60 text-sm tracking-widest uppercase">Performance metrics from backend</p>
+                </div>
+                <Link
+                    to="/admin/products/add"
+                    className="bg-[#c9a27d] text-black px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-[#d4b595] transition-all"
+                >
+                    <Plus size={18} /> Add Product
+                </Link>
             </div>
 
             {/* STATS GRID */}

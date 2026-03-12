@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../redux/productSlice";
 
 import chandelier from "../assets/chandelier.jpg";
 import banner from "../assets/bann.jpg";
@@ -55,15 +57,21 @@ const Hero = () => {
 
   const exploreImages = [Explore1, Explore2, Explore3, Explore4, Explore5, Explore6];
 
+  const dispatch = useDispatch();
+  const { items: products } = useSelector((state) => state.products);
+  const featuredProducts = products.filter(p => p.isFeatured).slice(0, 6);
+
   const [testimonialIndex, setTestimonialIndex] = useState(0);
 
   useEffect(() => {
+    dispatch(fetchProducts({ featured: true }));
+    
     const timer = setInterval(() => {
       setTestimonialIndex((prev) => (prev + 1) % testimonials.length);
     }, 4000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -119,25 +127,18 @@ const Hero = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-10 place-items-center">
 
             {collections.map((item, index) => (
-
-              <div key={index} className="text-center group cursor-pointer">
-
-                <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full overflow-hidden group-hover:scale-105 transition">
-
+              <Link to={`/category/${item.name}`} key={index} className="text-center group cursor-pointer block">
+                <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full overflow-hidden group-hover:scale-105 transition border-2 border-transparent group-hover:border-[#c9a27d]/20">
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition"
+                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                   />
-
                 </div>
-
-                <p className="mt-4 text-white text-sm tracking-wide">
+                <p className="mt-4 text-white text-xs md:text-sm tracking-[0.2em] uppercase font-light group-hover:text-[#c9a27d] transition-colors">
                   {item.name}
                 </p>
-
-              </div>
-
+              </Link>
             ))}
 
           </div>
@@ -163,68 +164,50 @@ const Hero = () => {
 
 
           {/* MOBILE SLIDER */}
-
-          <div className="flex md:hidden gap-6 overflow-x-auto pb-4 scroll-smooth">
-
-            {exploreImages.map((img, i) => (
-
-              <div key={i} className="min-w-[80%] bg-transparent">
-
+          <div className="flex md:hidden gap-6 overflow-x-auto pb-4 scroll-smooth px-4">
+            {(featuredProducts.length > 0 ? featuredProducts : []).map((product, i) => (
+              <Link to={`/product/${product._id}`} key={product._id || i} className="min-w-[80%] bg-transparent text-left">
                 <img
-                  src={img}
-                  alt="product"
-                  className="w-full h-72 object-cover rounded-lg"
+                  src={product.images[0]}
+                  alt={product.name}
+                  className="w-full h-72 object-cover rounded-lg border border-[#c9a27d]/10"
                 />
-
-                <h3 className="mt-4 font-semibold">
-                  Luxury Lighting Collection
+                <h3 className="mt-4 font-semibold text-[#c9a27d]">
+                  {product.name}
                 </h3>
-
-                <p className="text-sm text-gray-300 mt-2">
-                  Elegant lighting solutions designed for modern spaces.
+                <p className="text-sm text-gray-300 mt-2 line-clamp-2">
+                  {product.description}
                 </p>
-
-                <p className="mt-2 text-sm">
-                  Rs 1200
+                <p className="mt-2 text-sm font-bold italic">
+                  ₹{product.price.toLocaleString()}
                 </p>
-
-              </div>
-
+              </Link>
             ))}
-
           </div>
 
 
           {/* DESKTOP GRID */}
-
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-10">
-
-            {exploreImages.map((img, i) => (
-
-              <div key={i}>
-
-                <img
-                  src={img}
-                  alt="product"
-                  className="w-full h-72 md:h-80 object-cover hover:scale-105 transition"
-                />
-
-                <h3 className="mt-4 font-semibold">
-                  Luxury Lighting Collection
+            {(featuredProducts.length > 0 ? featuredProducts : []).map((product, i) => (
+              <Link to={`/product/${product._id}`} key={product._id || i} className="group text-left">
+                <div className="overflow-hidden h-72 md:h-80 bg-[#1a1a1a]">
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  />
+                </div>
+                <h3 className="mt-4 font-semibold text-[#c9a27d] group-hover:text-white transition-colors">
+                  {product.name}
                 </h3>
-
-                <p className="text-sm text-gray-300 mt-2">
-                  Elegant lighting solutions designed for modern spaces.
+                <p className="text-sm text-gray-400 mt-2 line-clamp-2 italic">
+                  {product.description}
                 </p>
-
-                <p className="mt-2 text-sm">
-                  Rs 1200
+                <p className="mt-2 text-sm font-bold tracking-widest">
+                  ₹{product.price.toLocaleString()}
                 </p>
-
-              </div>
-
+              </Link>
             ))}
-
           </div>
 
 
@@ -232,7 +215,7 @@ const Hero = () => {
 
           <div className="mt-14">
 
-            <a href="/products">
+            <Link to="/products">
 
               <button className="bg-[#c9a27d] text-black px-10 py-3 rounded-full font-semibold hover:bg-[#d8b48a] transition">
 
@@ -240,7 +223,7 @@ const Hero = () => {
 
               </button>
 
-            </a>
+            </Link>
 
           </div>
 
