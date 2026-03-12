@@ -125,6 +125,7 @@ function App() {
           <Route path="dashboard" element={<AdminOverview />} />
           <Route path="products" element={<AdminProductList />} />
           <Route path="products/add" element={<ProductUpload />} />
+          <Route path="products/edit/:id" element={<ProductUpload />} />
           <Route path="orders" element={<div className="text-white">Order Management (Coming Soon)</div>} />
           <Route path="customers" element={<div className="text-white">Customer Management (Coming Soon)</div>} />
           <Route path="settings" element={<div className="text-white">Admin Settings (Coming Soon)</div>} />

@@ -1,20 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { showToast } from "../redux/authSlice";
-import { Package, Upload, Plus, X, List, Image as ImageIcon, Info, DollarSign, Database, Star } from "lucide-react";
+import { Package, Upload, Plus, X, List, Image as ImageIcon, Info, DollarSign, Database, Star, Save } from "lucide-react";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
 const ProductUpload = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(false);
 
     const categories = [
         "Chandeliers", "Wall Lights", "Pendants", "Duplex", "Outdoor",
         "Fans", "Lamps", "Architecter Lights", "Artifacts"
     ];
 
-    const [formData, setFormData] = useState({
+    const initialFormState = {
         name: "",
         description: "",
         price: "",
@@ -31,7 +35,46 @@ const ProductUpload = () => {
             color: "",
             finish: ""
         }
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormState);
+
+    useEffect(() => {
+        if (id) {
+            fetchProductDetails();
+        }
+    }, [id]);
+
+    const fetchProductDetails = async () => {
+        setFetching(true);
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/${id}`);
+            const product = response.data.data;
+            setFormData({
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                oldPrice: product.oldPrice || "",
+                category: product.category,
+                subCategory: product.subCategory || "",
+                stock: product.stock,
+                isFeatured: product.isFeatured || false,
+                images: product.images.length > 0 ? product.images : [""],
+                specifications: {
+                    material: product.specifications?.material || "",
+                    dimensions: product.specifications?.dimensions || "",
+                    wattage: product.specifications?.wattage || "",
+                    color: product.specifications?.color || "",
+                    finish: product.specifications?.finish || ""
+                }
+            });
+        } catch (error) {
+            dispatch(showToast({ message: "Failed to fetch product details.", type: "error" }));
+            navigate("/admin/products");
+        } finally {
+            setFetching(false);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -71,7 +114,6 @@ const ProductUpload = () => {
         setLoading(true);
 
         try {
-            // Filter out empty image strings
             const payload = {
                 ...formData,
                 images: formData.images.filter(img => img.trim() !== ""),
@@ -80,35 +122,30 @@ const ProductUpload = () => {
                 stock: Number(formData.stock)
             };
 
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/products`, payload, {
+            const url = id 
+                ? `${import.meta.env.VITE_API_URL}/products/${id}`
+                : `${import.meta.env.VITE_API_URL}/products`;
+            
+            const method = id ? "put" : "post";
+
+            const response = await axios[method](url, payload, {
                 withCredentials: true
             });
 
             if (response.data) {
-                dispatch(showToast({ message: "Product uploaded successfully! ✨", type: "success" }));
-                // Reset form
-                setFormData({
-                    name: "",
-                    description: "",
-                    price: "",
-                    oldPrice: "",
-                    category: "Chandeliers",
-                    subCategory: "",
-                    stock: "",
-                    isFeatured: false,
-                    images: [""],
-                    specifications: {
-                        material: "",
-                        dimensions: "",
-                        wattage: "",
-                        color: "",
-                        finish: ""
-                    }
-                });
+                dispatch(showToast({ 
+                    message: id ? "Product updated successfully! ✨" : "Product uploaded successfully! ✨", 
+                    type: "success" 
+                }));
+                if (!id) {
+                    setFormData(initialFormState);
+                } else {
+                    navigate("/admin/products");
+                }
             }
         } catch (error) {
             dispatch(showToast({
-                message: error.response?.data?.message || "Failed to upload product.",
+                message: error.response?.data?.message || "Operation failed.",
                 type: "error"
             }));
         } finally {
@@ -116,14 +153,24 @@ const ProductUpload = () => {
         }
     };
 
+    if (fetching) {
+        return (
+            <div className="h-[60vh] flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-[#c9a27d]/20 border-t-[#c9a27d] rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="max-w-5xl mx-auto pb-20">
             <div className="mb-10">
                 <h1 className="text-3xl font-light tracking-tight mb-2 flex items-center gap-3">
-                    <Plus className="text-[#c9a27d]" />
-                    Elevate Collection
+                    {id ? <Save className="text-[#c9a27d]" /> : <Plus className="text-[#c9a27d]" />}
+                    {id ? "Refine Masterpiece" : "Elevate Collection"}
                 </h1>
-                <p className="text-[#c9a27d]/60 text-sm tracking-widest uppercase">Add a new luxury fixture to your store</p>
+                <p className="text-[#c9a27d]/60 text-sm tracking-widest uppercase">
+                    {id ? "Update the details of your luxury fixture" : "Add a new luxury fixture to your store"}
+                </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
@@ -344,8 +391,8 @@ const ProductUpload = () => {
                             <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
                         ) : (
                             <>
-                                <Upload size={18} />
-                                Publish to Gallery
+                                {id ? <Save size={18} /> : <Upload size={18} />}
+                                {id ? "Save Changes" : "Publish to Gallery"}
                             </>
                         )}
                     </button>

@@ -155,9 +155,12 @@ const AdminProductList = () => {
                                                     >
                                                         <ExternalLink size={16} />
                                                     </a>
-                                                    <button className="p-2 text-white/20 hover:text-blue-400 hover:bg-blue-400/10 rounded-lg transition-all">
+                                                    <Link 
+                                                        to={`/admin/products/edit/${product._id}`}
+                                                        className="p-2 text-white/20 hover:text-blue-400 hover:bg-blue-400/10 rounded-lg transition-all"
+                                                    >
                                                         <Edit2 size={16} />
-                                                    </button>
+                                                    </Link>
                                                     <button 
                                                         onClick={() => handleDelete(product._id)}
                                                         className="p-2 text-white/20 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
