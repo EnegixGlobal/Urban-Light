@@ -1,11 +1,25 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { User, Heart, ShoppingCart, Lightbulb } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Heart, ShoppingCart, Lightbulb, LogOut } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser, openAuthModal } from "../redux/authSlice";
 
 const Navbar = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser());
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
   return (
     <>
@@ -32,12 +46,28 @@ const Navbar = () => {
             <ShoppingCart size={20} />
           </Link>
 
-          <Link
-            to="/login"
-            className="flex items-center gap-2 text-[#c9a27d] hover:text-white"
-          >
-            <User size={20} />
-          </Link>
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <span className="text-[#c9a27d] font-medium hidden md:block border-r border-[#c9a27d]/30 pr-3">
+                {user?.name}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="text-[#c9a27d] hover:text-white flex items-center gap-1.5 transition-colors group"
+                title="Logout"
+              >
+                <span className="text-sm hidden sm:block">Logout</span>
+                <LogOut size={18} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => dispatch(openAuthModal("login"))}
+              className="flex items-center gap-2 text-[#c9a27d] hover:text-white transition-colors cursor-pointer"
+            >
+              <User size={20} />
+            </button>
+          )}
 
           {/* MENU BUTTON */}
 
@@ -47,9 +77,7 @@ const Navbar = () => {
           >
             Menu
           </button>
-
         </div>
-
       </header>
 
 
@@ -129,6 +157,22 @@ const Navbar = () => {
                 <Link to="/cart" onClick={() => setMenuOpen(false)}>
                   Cart
                 </Link>
+
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => { handleLogout(); setMenuOpen(false); }}
+                    className="text-[#c9a27d] hover:text-white"
+                  >
+                    Logout ({user?.name.split(" ")[0]})
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { dispatch(openAuthModal("login")); setMenuOpen(false); }}
+                    className="text-[#c9a27d] hover:text-white text-left cursor-pointer"
+                  >
+                    Login
+                  </button>
+                )}
 
               </div>
 
