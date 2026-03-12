@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setReady, hideToast } from "./redux/authSlice";
+import { setReady, hideToast, checkAuth } from "./redux/authSlice";
 import { AnimatePresence } from "framer-motion";
 
 import Navbar from "./components/Navbar";
@@ -36,9 +36,9 @@ function App() {
   const isAdmin = isAuthenticated && user?.role === 'admin';
 
   useEffect(() => {
-    // Small delay or check to ensure Redux state is stabilized
-    // In a real app, you would call a backend /api/auth/me here
-    dispatch(setReady());
+    // Call the backend /api/auth/user route to verify the session
+    // This uses the routes provided by the user
+    dispatch(checkAuth());
   }, [dispatch]);
 
   const addToWishlist = (product) => {

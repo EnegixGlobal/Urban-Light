@@ -9,16 +9,18 @@ router.post('/signup', signup)
 router.post('/login', login)
 router.post('/logout', logout)
 
-router.get('/admin', protect, authorized('admin'), (req, res) => {
+router.get('/admin', protect, authorized('admin'), (req: any, res) => {
     res.json({
-        message: "Admin Dashboard"
+        message: "Admin Dashboard",
+        user: req.user
     })
 })
 
 
-router.get('/user', protect, authorized('user', 'admin'), (req, res) => {
+router.get('/user', protect, authorized('user', 'admin'), (req: any, res) => {
     res.json({
-        message: "User Dashboard"
+        message: "User Dashboard",
+        user: req.user
     })
 })
 
