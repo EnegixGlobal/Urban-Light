@@ -10,6 +10,8 @@ import productRoutes from "./routes/product.route";
 import adminRoutes from "./routes/admin.route";
 import cartRoutes from "./routes/cart.route";
 import wishlistRoutes from "./routes/wishlist.route";
+import uploadRoutes from "./routes/upload.route";
+import path from "path";
 
 const PORT = process.env.PORT || 8000;
 
@@ -23,6 +25,8 @@ app.use(cors({
   credentials: true
 }));
 
+// Serve static files
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 connectDb();
 
@@ -36,6 +40,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/upload", uploadRoutes);
 
 
 app.listen(PORT, () => {

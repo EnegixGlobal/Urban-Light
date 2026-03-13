@@ -97,7 +97,7 @@ const Product = () => {
                           Rs: {product.price.toLocaleString()}
                         </span>
                         {product.oldPrice && (
-                          <span className="line-through text-white/10 text-[10px] md:text-xs font-light decoration-[#c9a27d]/30">
+                          <span className="line-through text-white/50 text-[10px] md:text-xs font-light decoration-[#c9a27d]/40">
                             {product.oldPrice.toLocaleString()}
                           </span>
                         )}

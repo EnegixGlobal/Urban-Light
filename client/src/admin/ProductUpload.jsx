@@ -98,6 +98,29 @@ const ProductUpload = () => {
         setFormData(prev => ({ ...prev, images: newImages }));
     };
 
+    const handleFileUpload = async (e, index) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const uploadFormData = new FormData();
+        uploadFormData.append("image", file);
+
+        try {
+            dispatch(showToast({ message: "Uploading image...", type: "info" }));
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/upload`, uploadFormData, {
+                headers: { "Content-Type": "multipart/form-data" },
+                withCredentials: true
+            });
+
+            const newImages = [...formData.images];
+            newImages[index] = response.data.url;
+            setFormData(prev => ({ ...prev, images: newImages }));
+            dispatch(showToast({ message: "Image uploaded successfully!", type: "success" }));
+        } catch (error) {
+            dispatch(showToast({ message: "Upload failed.", type: "error" }));
+        }
+    };
+
     const addImageField = () => {
         setFormData(prev => ({ ...prev, images: [...prev.images, ""] }));
     };
@@ -122,10 +145,10 @@ const ProductUpload = () => {
                 stock: Number(formData.stock)
             };
 
-            const url = id 
+            const url = id
                 ? `${import.meta.env.VITE_API_URL}/products/${id}`
                 : `${import.meta.env.VITE_API_URL}/products`;
-            
+
             const method = id ? "put" : "post";
 
             const response = await axios[method](url, payload, {
@@ -133,9 +156,9 @@ const ProductUpload = () => {
             });
 
             if (response.data) {
-                dispatch(showToast({ 
-                    message: id ? "Product updated successfully! ✨" : "Product uploaded successfully! ✨", 
-                    type: "success" 
+                dispatch(showToast({
+                    message: id ? "Product updated successfully! ✨" : "Product uploaded successfully! ✨",
+                    type: "success"
                 }));
                 if (!id) {
                     setFormData(initialFormState);
@@ -319,35 +342,59 @@ const ProductUpload = () => {
                 <section className="bg-[#111] p-8 md:p-10 rounded-3xl border border-[#c9a27d]/10 shadow-2xl">
                     <div className="flex justify-between items-center mb-8">
                         <h3 className="text-xl font-light flex items-center gap-3">
-                            <ImageIcon size={20} className="text-[#c9a27d]" /> Gallery URLs
+                            <ImageIcon size={20} className="text-[#c9a27d]" /> Product Gallery
                         </h3>
                         <button
                             type="button"
                             onClick={addImageField}
                             className="text-xs uppercase tracking-[0.2em] text-[#c9a27d] hover:text-white transition-colors bg-[#c9a27d]/10 px-4 py-2 rounded-full cursor-pointer"
                         >
-                            Add Image Slot
+                            Add Another Masterpiece
                         </button>
                     </div>
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {formData.images.map((img, idx) => (
-                            <div key={idx} className="flex gap-3 animate-in fade-in slide-in-from-left-2 transition-all">
-                                <input
-                                    type="text"
-                                    placeholder={`High-res image URL ${idx + 1}`}
-                                    value={img}
-                                    onChange={(e) => handleImageChange(idx, e.target.value)}
-                                    className="flex-1 bg-white/5 border border-white/10 p-3 rounded-lg focus:outline-none focus:border-[#c9a27d] transition-all text-white text-sm"
-                                />
-                                {idx > 0 && (
-                                    <button
-                                        type="button"
-                                        onClick={() => removeImageField(idx)}
-                                        className="p-3 text-red-500/50 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all cursor-pointer"
-                                    >
-                                        <X size={18} />
-                                    </button>
-                                )}
+                            <div key={idx} className="space-y-4 p-4 bg-white/5 rounded-2xl border border-white/5 group relative animate-in fade-in slide-in-from-bottom-2">
+                                <div className="aspect-video rounded-xl bg-black overflow-hidden relative group/preview">
+                                    {img ? (
+                                        <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/preview:scale-105" />
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col items-center justify-center text-white/10 italic text-sm">
+                                            <ImageIcon size={32} className="mb-2" />
+                                            No visual yet
+                                        </div>
+                                    )}
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center">
+                                        <label className="bg-[#c9a27d] text-black px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest cursor-pointer hover:bg-white transition-colors">
+                                            {img ? "Change Visual" : "Choose Visual"}
+                                            <input
+                                                type="file"
+                                                className="hidden"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileUpload(e, idx)}
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Or paste external URL here..."
+                                        value={img}
+                                        onChange={(e) => handleImageChange(idx, e.target.value)}
+                                        className="flex-1 bg-black/40 border border-white/10 p-2.5 rounded-lg focus:outline-none focus:border-[#c9a27d]/50 transition-all text-white text-xs"
+                                    />
+                                    {idx > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => removeImageField(idx)}
+                                            className="p-2.5 text-red-500/50 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all cursor-pointer"
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
