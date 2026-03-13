@@ -1,67 +1,114 @@
-import { motion } from "framer-motion";
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromWishlistAsync } from "../redux/wishlistSlice";
+import { addToCartAsync } from "../redux/cartSlice";
+import { Trash2, ShoppingCart, HeartOff } from "lucide-react";
+import { showToast } from "../redux/authSlice";
 
-const Wishlist = ({ wishlist, removeFromWishlist }) => {
+const Wishlist = () => {
+  const { items: wishlist, loading } = useSelector((state) => state.wishlist);
+  const dispatch = useDispatch();
+
+  const handleRemove = (id) => {
+    dispatch(removeFromWishlistAsync(id));
+    dispatch(showToast({ message: "Removed from wishlist", type: "success" }));
+  };
+
+  const handleMoveToCart = (product) => {
+    dispatch(addToCartAsync(product._id));
+    dispatch(showToast({ message: "Added to cart", type: "success" }));
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white pt-28 px-6 md:px-20">
-
-      {/* Title */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="text-center mb-16"
-      >
-        <h1 className="text-4xl md:text-5xl font-light">
-          Your Wishlist
-        </h1>
-        <p className="text-gray-400 mt-4">
-          Save your favorite luxury lighting pieces.
-        </p>
-      </motion.div>
-
-      {/* Empty State */}
-      {wishlist.length === 0 ? (
-        <div className="text-center mt-20">
-          <div className="text-6xl mb-6">♡</div>
-          <h2 className="text-2xl mb-4">Your wishlist is empty</h2>
-          <p className="text-gray-400">
-            Browse products and add your favorites.
-          </p>
+    <div className="min-h-screen bg-black text-white pt-32 pb-20 px-6 lg:px-20">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-16">
+          <h1 className="text-5xl font-light tracking-tight mb-4">
+            Private <span className="text-[#c9a27d]">Collection</span>
+          </h1>
+          <div className="w-20 h-1 bg-[#c9a27d]"></div>
         </div>
-      ) : (
-        <div className="grid md:grid-cols-3 gap-10">
 
-          {wishlist.map((item) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="bg-[#4b3b2c] rounded-2xl overflow-hidden shadow-xl hover:scale-105 transition duration-500"
+        {wishlist.length === 0 ? (
+          <div className="h-64 flex flex-col items-center justify-center text-center space-y-8">
+            <div className="w-20 h-20 rounded-full bg-[#c9a27d]/10 flex items-center justify-center">
+              <HeartOff size={40} className="text-[#c9a27d]" />
+            </div>
+            <p className="text-[#c9a27d]/60 italic font-light text-xl">
+              Your wishlist is a blank canvas.
+            </p>
+            <Link
+              to="/products"
+              className="bg-[#c9a27d] text-black px-10 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-white transition-all"
             >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="h-64 w-full object-cover"
-              />
-
-              <div className="p-6">
-                <h2 className="text-xl mb-2">{item.name}</h2>
-                <p className="text-gray-300 mb-6">₹ {item.price}</p>
-
-                <button
-                  onClick={() => removeFromWishlist(item.id)}
-                  className="w-full py-3 border border-white rounded-lg hover:bg-white hover:text-black transition"
+              Explore Masterpieces
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <AnimatePresence>
+              {wishlist.map((item) => (
+                <motion.div
+                  key={item._id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="group bg-[#0d0d0d] border border-white/5 rounded-[2.5rem] overflow-hidden flex flex-col h-full"
                 >
-                  Remove
-                </button>
-              </div>
-            </motion.div>
-          ))}
+                  <div className="relative h-72 overflow-hidden">
+                    <img
+                      src={item.images?.[0]}
+                      alt={item.name}
+                      className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
 
-        </div>
-      )}
+                    <button
+                      onClick={() => handleRemove(item._id)}
+                      className="absolute top-6 right-6 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-white/60 hover:text-red-500 hover:bg-white transition-all shadow-xl"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+
+                  <div className="p-8 flex flex-col flex-1">
+                    <div className="mb-6">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#c9a27d] font-black mb-2">
+                        {item.category}
+                      </p>
+                      <h3 className="text-2xl font-light tracking-tight line-clamp-1 mb-2">
+                        {item.name}
+                      </h3>
+                      <p className="text-xl font-bold tracking-tighter text-[#c9a27d]">
+                        Rs: {item.price.toLocaleString()}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto flex gap-4">
+                      <Link
+                        to={`/product/${item._id}`}
+                        className="flex-1 bg-white/5 border border-white/10 text-white text-[10px] h-12 rounded-full font-black uppercase tracking-widest flex items-center justify-center hover:bg-white hover:text-black transition-all"
+                      >
+                        View Details
+                      </Link>
+                      <button
+                        onClick={() => handleMoveToCart(item)}
+                        className="w-12 h-12 bg-[#c9a27d] text-black rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg active:scale-95"
+                        title="Add to Cart"
+                      >
+                        <ShoppingCart size={20} />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

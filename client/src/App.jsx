@@ -32,9 +32,9 @@ import ProductUpload from "./admin/ProductUpload";
 import AdminProductList from "./admin/AdminProductList";
 import { fetchProducts } from "./redux/productSlice";
 import { fetchCart } from "./redux/cartSlice";
+import { fetchWishlist } from "./redux/wishlistSlice";
 
 function App() {
-  const [wishlist, setWishlist] = useState([]);
   const dispatch = useDispatch();
   const { toast, user, isAuthenticated } = useSelector((state) => state.auth);
   const isAdmin = isAuthenticated && user?.role === 'admin';
@@ -49,19 +49,9 @@ function App() {
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchCart());
+      dispatch(fetchWishlist());
     }
   }, [isAuthenticated, dispatch]);
-
-  const addToWishlist = (product) => {
-    const exist = wishlist.find((item) => item.id === product.id);
-    if (!exist) {
-      setWishlist([...wishlist, product]);
-    }
-  };
-
-  const removeFromWishlist = (id) => {
-    setWishlist(wishlist.filter((item) => item.id !== id));
-  };
 
   return (
     <Router>
@@ -100,7 +90,7 @@ function App() {
         {/* Product Details */}
         <Route
           path="/product/:productId"
-          element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <ProductDetails addToWishlist={addToWishlist} />}
+          element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <ProductDetails />}
         />
 
         {/* Wishlist (Protected) */}
@@ -109,10 +99,7 @@ function App() {
           element={
             isAdmin ? <Navigate to="/admin/dashboard" replace /> : (
               <ProtectedRoute>
-                <Wishlist
-                  wishlist={wishlist}
-                  removeFromWishlist={removeFromWishlist}
-                />
+                <Wishlist />
               </ProtectedRoute>
             )
           }

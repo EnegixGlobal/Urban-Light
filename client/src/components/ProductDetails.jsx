@@ -3,14 +3,18 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../redux/productSlice";
 import { addToCartAsync } from "../redux/cartSlice";
+import { toggleWishlistAsync } from "../redux/wishlistSlice";
 import { showToast, openAuthModal } from "../redux/authSlice";
 
-const ProductDetails = ({ addToWishlist }) => {
+const ProductDetails = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const { selectedProduct: product, loading, error } = useSelector((state) => state.products);
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { items: wishlistItems } = useSelector((state) => state.wishlist);
   const [activeImage, setActiveImage] = useState(0);
+
+  const isInWishlist = wishlistItems.some(item => (item._id || item) === product?._id);
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -20,6 +24,15 @@ const ProductDetails = ({ addToWishlist }) => {
     }
     dispatch(addToCartAsync(product._id));
     dispatch(showToast({ message: "Product added to cart", type: "success" }));
+  };
+
+  const handleWishlistToggle = () => {
+    if (!isAuthenticated) {
+      dispatch(showToast({ message: "Please login to save wishlist", type: "error" }));
+      dispatch(openAuthModal("login"));
+      return;
+    }
+    dispatch(toggleWishlistAsync(product._id));
   };
 
   useEffect(() => {
@@ -157,10 +170,10 @@ const ProductDetails = ({ addToWishlist }) => {
                 Acquire Now
               </button>
               <button
-                onClick={() => addToWishlist(product)}
-                className="flex-1 h-16 rounded-full border border-white/10 hover:bg-white/5 transition-all duration-500 uppercase tracking-[0.2em] text-[10px] font-black flex items-center justify-center gap-2"
+                onClick={handleWishlistToggle}
+                className={`flex-1 h-16 rounded-full border border-white/10 hover:bg-white/5 transition-all duration-500 uppercase tracking-[0.2em] text-[10px] font-black flex items-center justify-center gap-2 ${isInWishlist ? 'text-[#c9a27d] border-[#c9a27d]/30 bg-[#c9a27d]/5' : ''}`}
               >
-                <span>♥</span> Save to Wishlist
+                <span className="text-sm">{isInWishlist ? '♥' : '♡'}</span> {isInWishlist ? 'Saved to Wishlist' : 'Save to Wishlist'}
               </button>
             </div>
 
