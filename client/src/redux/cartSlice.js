@@ -89,7 +89,30 @@ const cartSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder
+        // Optimistic Updates for Add/Remove
+        builder.addCase(addToCartAsync.pending, (state, action) => {
+            state.loading = true;
+            const productId = action.meta.arg;
+            const item = state.items.find(i => i.productId._id === productId);
+            if (item) {
+                item.quantity += 1;
+                state.totalQuantity += 1;
+                state.totalAmount += item.productId.price;
+            }
+        })
+            .addCase(removeFromCartAsync.pending, (state, action) => {
+                state.loading = true;
+                const productId = action.meta.arg;
+                const item = state.items.find(i => i.productId._id === productId);
+                if (item && item.quantity > 0) {
+                    item.quantity -= 1;
+                    state.totalQuantity -= 1;
+                    state.totalAmount -= item.productId.price;
+                    if (item.quantity === 0) {
+                        state.items = state.items.filter(i => i.productId._id !== productId);
+                    }
+                }
+            })
             // Fetch Cart
             .addCase(fetchCart.pending, (state) => {
                 state.loading = true;
@@ -105,29 +128,48 @@ const cartSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            // Reset state on actual server success (sync check)
+            .addCase(addToCartAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = action.payload.items || [];
+                const { totalQuantity, totalAmount } = calculateTotals(state.items);
+                state.totalQuantity = totalQuantity;
+                state.totalAmount = totalAmount;
+            })
+            .addCase(removeFromCartAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = action.payload.items || [];
+                const { totalQuantity, totalAmount } = calculateTotals(state.items);
+                state.totalQuantity = totalQuantity;
+                state.totalAmount = totalAmount;
+            })
+            // Error handling - Revert or Refresh
+            .addCase(addToCartAsync.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                // Ideally, we'd roll back here, but a re-fetch is safer for consistency
+            })
+            .addCase(removeFromCartAsync.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // Other Actions
+            .addCase(deleteFromCartAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(deleteFromCartAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = action.payload.items || [];
+                const { totalQuantity, totalAmount } = calculateTotals(state.items);
+                state.totalQuantity = totalQuantity;
+                state.totalAmount = totalAmount;
+            })
             .addCase(clearCartAsync.fulfilled, (state) => {
                 state.items = [];
                 state.totalQuantity = 0;
                 state.totalAmount = 0;
                 state.loading = false;
-            })
-            // Add/Remove/Delete Item
-            .addMatcher(
-                (action) => [addToCartAsync.fulfilled, removeFromCartAsync.fulfilled, deleteFromCartAsync.fulfilled].includes(action.type),
-                (state, action) => {
-                    state.loading = false;
-                    state.items = action.payload.items || [];
-                    const { totalQuantity, totalAmount } = calculateTotals(state.items);
-                    state.totalQuantity = totalQuantity;
-                    state.totalAmount = totalAmount;
-                }
-            )
-            .addMatcher(
-                (action) => [addToCartAsync.pending, removeFromCartAsync.pending, deleteFromCartAsync.pending].includes(action.type),
-                (state) => {
-                    state.loading = true;
-                }
-            );
+            });
     },
 });
 
