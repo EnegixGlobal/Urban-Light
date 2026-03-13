@@ -65,7 +65,7 @@ const Hero = () => {
 
   useEffect(() => {
     dispatch(fetchProducts({ featured: true }));
-    
+
     const timer = setInterval(() => {
       setTestimonialIndex((prev) => (prev + 1) % testimonials.length);
     }, 4000);

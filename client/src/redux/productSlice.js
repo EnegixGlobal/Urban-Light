@@ -6,10 +6,11 @@ export const fetchProducts = createAsyncThunk(
     "products/fetchAll",
     async (filters, { rejectWithValue }) => {
         try {
-            const { category, featured } = filters || {};
+            const { category, subCategory, featured } = filters || {};
             let url = API_URL;
             const params = new URLSearchParams();
             if (category) params.append("category", category);
+            if (subCategory) params.append("subCategory", subCategory);
             if (featured) params.append("featured", featured);
 
             const queryString = params.toString();

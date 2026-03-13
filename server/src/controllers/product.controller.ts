@@ -6,11 +6,15 @@ import Product from "../models/product.model";
 // @access  Public
 export const getProducts = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { category, search, featured } = req.query;
+        const { category, subCategory, search, featured } = req.query;
         let query: any = {};
 
         if (category) {
             query.category = category;
+        }
+
+        if (subCategory) {
+            query.subCategory = subCategory;
         }
 
         if (featured) {
