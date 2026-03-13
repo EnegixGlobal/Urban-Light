@@ -30,8 +30,8 @@ export const signup = async (req: Request, res: Response) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      secure: false, // Changed for localhost
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
@@ -69,8 +69,8 @@ export const login = async (req: Request, res: Response) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: false, // Changed for localhost
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
@@ -98,3 +98,19 @@ export const logout = async (req: Request, res: Response) => {
     message: "Logged out successfully"
   })
 }
+
+// Get Current User
+export const getMe = async (req: any, res: Response) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};

@@ -105,7 +105,7 @@ const ProductDetails = ({ addToWishlist }) => {
                 Rs: {product.price.toLocaleString()}
               </span>
               {product.oldPrice && (
-                <span className="text-2xl text-white/10 line-through font-light decoration-[#c9a27d]/30">
+                <span className="text-2xl text-white/50 line-through font-light decoration-[#c9a27d]/70">
                   {product.oldPrice.toLocaleString()}
                 </span>
               )}
