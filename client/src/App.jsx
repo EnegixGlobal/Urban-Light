@@ -30,18 +30,27 @@ import AdminDashboard from "./admin/AdminDashboard";
 import AdminOverview from "./admin/AdminOverview";
 import ProductUpload from "./admin/ProductUpload";
 import AdminProductList from "./admin/AdminProductList";
+import { fetchProducts } from "./redux/productSlice";
+import { fetchCart } from "./redux/cartSlice";
 
 function App() {
   const [wishlist, setWishlist] = useState([]);
   const dispatch = useDispatch();
   const { toast, user, isAuthenticated } = useSelector((state) => state.auth);
   const isAdmin = isAuthenticated && user?.role === 'admin';
+  const { items: products } = useSelector((state) => state.products);
+
 
   useEffect(() => {
-    // Call the backend /api/auth/user route to verify the session
-    // This uses the routes provided by the user
     dispatch(checkAuth());
+    dispatch(fetchProducts());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCart());
+    }
+  }, [isAuthenticated, dispatch]);
 
   const addToWishlist = (product) => {
     const exist = wishlist.find((item) => item.id === product.id);

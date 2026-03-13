@@ -2,12 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../redux/productSlice";
+import { addToCartAsync } from "../redux/cartSlice";
+import { showToast, openAuthModal } from "../redux/authSlice";
 
 const ProductDetails = ({ addToWishlist }) => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const { selectedProduct: product, loading, error } = useSelector((state) => state.products);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [activeImage, setActiveImage] = useState(0);
+
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      dispatch(showToast({ message: "Please login to add items to cart", type: "error" }));
+      dispatch(openAuthModal("login"));
+      return;
+    }
+    dispatch(addToCartAsync(product._id));
+    dispatch(showToast({ message: "Product added to cart", type: "success" }));
+  };
 
   useEffect(() => {
     if (productId) {
@@ -138,6 +151,7 @@ const ProductDetails = ({ addToWishlist }) => {
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
+                onClick={handleAddToCart}
                 className="flex-[2] bg-[#c9a27d] text-black h-16 rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-500 shadow-2xl hover:shadow-[#c9a27d]/20 active:scale-95"
               >
                 Acquire Now

@@ -9,6 +9,7 @@ const Navbar = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { totalQuantity } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -42,8 +43,13 @@ const Navbar = () => {
             <Heart size={20} />
           </Link>
 
-          <Link to="/cart" className="text-[#c9a27d] hover:text-white">
+          <Link to="/cart" className="text-[#c9a27d] hover:text-white relative">
             <ShoppingCart size={20} />
+            {totalQuantity > 0 && (
+              <span className="absolute -top-2 -right-2 bg-white text-black text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                {totalQuantity}
+              </span>
+            )}
           </Link>
 
           {isAuthenticated ? (

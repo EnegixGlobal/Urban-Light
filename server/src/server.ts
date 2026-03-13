@@ -8,6 +8,7 @@ import connectDb from "./config/db";
 import authRoutes from "./routes/auth.route";
 import productRoutes from "./routes/product.route";
 import adminRoutes from "./routes/admin.route";
+import cartRoutes from "./routes/cart.route";
 
 const PORT = process.env.PORT || 8000;
 
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/cart", cartRoutes);
 
 
 app.listen(PORT, () => {
