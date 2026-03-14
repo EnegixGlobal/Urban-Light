@@ -1,5 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setReady, hideToast, checkAuth } from "./redux/authSlice";
+import { AnimatePresence } from "framer-motion";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -15,65 +18,118 @@ import Cart from "./components/Cart";
 
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
+import AuthModal from "./components/AuthModal";
+import Toast from "./components/Toast";
+import ScrollToTop from "./components/ScrollToTop";
+import AdminRoute from "./components/AdminRoute";
+
+// Admin Pages
+import AdminDashboard from "./admin/AdminDashboard";
+import AdminOverview from "./admin/AdminOverview";
+import ProductUpload from "./admin/ProductUpload";
+import AdminProductList from "./admin/AdminProductList";
+import { fetchProducts } from "./redux/productSlice";
+import { fetchCart } from "./redux/cartSlice";
+import { fetchWishlist } from "./redux/wishlistSlice";
 
 function App() {
-  const [wishlist, setWishlist] = useState([]);
+  const dispatch = useDispatch();
+  const { toast, user, isAuthenticated } = useSelector((state) => state.auth);
+  const isAdmin = isAuthenticated && user?.role === 'admin';
+  const { items: products } = useSelector((state) => state.products);
 
-  const addToWishlist = (product) => {
-    const exist = wishlist.find((item) => item.id === product.id);
-    if (!exist) {
-      setWishlist([...wishlist, product]);
+
+  useEffect(() => {
+    dispatch(checkAuth());
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCart());
+      dispatch(fetchWishlist());
     }
-  };
-
-  const removeFromWishlist = (id) => {
-    setWishlist(wishlist.filter((item) => item.id !== id));
-  };
+  }, [isAuthenticated, dispatch]);
 
   return (
     <Router>
-      <Navbar />
+      <ScrollToTop />
+      {!isAdmin && <Navbar />}
+      <AuthModal />
+      <AnimatePresence>
+        {toast.show && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => dispatch(hideToast())}
+          />
+        )}
+      </AnimatePresence>
 
       <Routes>
+        <Route
+          path="/"
+          element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <Hero />}
+        />
+        <Route path="/about" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <About />} />
+        <Route path="/contact" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <Contact />} />
 
-        <Route path="/" element={<Hero />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-
-        {/* Login Signup */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* Login Signup (Public Only) */}
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
 
         {/* Products Page */}
-        <Route path="/products" element={<Product />} />
+        <Route path="/products" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <Product />} />
 
         {/* Category */}
-        <Route path="/category/:id" element={<CategoryPage />} />
-        <Route path="/category/:id/:sub" element={<SubCategoryPage />} />
+        <Route path="/category/:id" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <CategoryPage />} />
+        <Route path="/category/:id/:sub" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <SubCategoryPage />} />
 
         {/* Product Details */}
         <Route
           path="/product/:productId"
-          element={<ProductDetails addToWishlist={addToWishlist} />}
+          element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <ProductDetails />}
         />
 
-        {/* Wishlist */}
+        {/* Wishlist (Protected) */}
         <Route
           path="/wishlist"
           element={
-            <Wishlist
-              wishlist={wishlist}
-              removeFromWishlist={removeFromWishlist}
-            />
+            isAdmin ? <Navigate to="/admin/dashboard" replace /> : (
+              <ProtectedRoute>
+                <Wishlist />
+              </ProtectedRoute>
+            )
           }
         />
 
-        {/* Cart */}
-        <Route path="/cart" element={<Cart />} />
+        {/* Cart (Protected) */}
+        <Route path="/cart" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <ProtectedRoute><Cart /></ProtectedRoute>} />
+
+        {/* Admin Dashboard (Protected & Role Based) */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<AdminOverview />} />
+          <Route path="products" element={<AdminProductList />} />
+          <Route path="products/add" element={<ProductUpload />} />
+          <Route path="products/edit/:id" element={<ProductUpload />} />
+          <Route path="orders" element={<div className="text-white">Order Management (Coming Soon)</div>} />
+          <Route path="customers" element={<div className="text-white">Customer Management (Coming Soon)</div>} />
+          <Route path="settings" element={<div className="text-white">Admin Settings (Coming Soon)</div>} />
+        </Route>
 
       </Routes>
 
-      <Footer />
+      {!isAdmin && <Footer />}
     </Router>
   );
 }

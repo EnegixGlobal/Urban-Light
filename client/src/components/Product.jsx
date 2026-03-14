@@ -1,54 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-/* IMPORT IMAGES */
-
-import img1 from "../assets/wall light/020A3232.JPG";
-import img2 from "../assets/wall light/020A3233.JPG";
-import img3 from "../assets/wall light/020A3235.JPG";
-import img4 from "../assets/wall light/020A3236.JPG";
-import img5 from "../assets/wall light/020A3237.JPG";
-import img6 from "../assets/wall light/020A3238.JPG";
-import img7 from "../assets/wall light/020A3241.JPG";
-import img8 from "../assets/wall light/020A3247.JPG";
-import img9 from "../assets/wall light/020A3248.JPG";
-import img10 from "../assets/wall light/020A3249.JPG";
-import img11 from "../assets/wall light/020A3274.JPG";
-import img12 from "../assets/wall light/020A3277.JPG";
-import img13 from "../assets/wall light/020A3278.JPG";
-import img14 from "../assets/wall light/020A3279.JPG";
-import img15 from "../assets/wall light/020A3281.JPG";
-import img16 from "../assets/wall light/020A3282.JPG";
-import img17 from "../assets/wall light/020A3283.JPG";
-import img18 from "../assets/wall light/020A3285.JPG";
-
-/* PRODUCT DATA */
-
-export const products = [
-  { id: 1, name: "Wall Light 3232", price: 3999, oldPrice: 5999, image: img1 },
-  { id: 2, name: "Wall Light 3233", price: 3999, oldPrice: 5999, image: img2 },
-  { id: 3, name: "Wall Light 3235", price: 3999, oldPrice: 5999, image: img3 },
-  { id: 4, name: "Wall Light 3236", price: 3999, oldPrice: 5999, image: img4 },
-  { id: 5, name: "Wall Light 3237", price: 3999, oldPrice: 5999, image: img5 },
-  { id: 6, name: "Wall Light 3238", price: 3999, oldPrice: 5999, image: img6 },
-  { id: 7, name: "Wall Light 3241", price: 3999, oldPrice: 5999, image: img7 },
-  { id: 8, name: "Wall Light 3247", price: 3999, oldPrice: 5999, image: img8 },
-  { id: 9, name: "Wall Light 3248", price: 3999, oldPrice: 5999, image: img9 },
-  { id: 10, name: "Wall Light 3249", price: 3999, oldPrice: 5999, image: img10 },
-  { id: 11, name: "Wall Light 3274", price: 3999, oldPrice: 5999, image: img11 },
-  { id: 12, name: "Wall Light 3277", price: 3999, oldPrice: 5999, image: img12 },
-  { id: 13, name: "Wall Light 3278", price: 3999, oldPrice: 5999, image: img13 },
-  { id: 14, name: "Wall Light 3279", price: 3999, oldPrice: 5999, image: img14 },
-  { id: 15, name: "Wall Light 3281", price: 3999, oldPrice: 5999, image: img15 },
-  { id: 16, name: "Wall Light 3282", price: 3999, oldPrice: 5999, image: img16 },
-  { id: 17, name: "Wall Light 3283", price: 3999, oldPrice: 5999, image: img17 },
-  { id: 18, name: "Wall Light 3285", price: 3999, oldPrice: 5999, image: img18 },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../redux/productSlice";
 
 const Product = () => {
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { items: products, loading } = useSelector((state) => state.products);
   const [sort, setSort] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   const sortedProducts = [...products].sort((a, b) => {
     if (sort === "low") return a.price - b.price;
@@ -57,88 +20,96 @@ const Product = () => {
   });
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-black text-white min-h-screen pt-32 pb-20 px-6 lg:px-20">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <div>
+            <h1 className="text-5xl font-light tracking-tight mb-4">
+              All <span className="text-[#c9a27d]">Collections</span>
+            </h1>
+            <div className="w-20 h-1 bg-[#c9a27d]"></div>
+          </div>
 
-      {/* BANNER */}
-
-      <div className="h-[250px] md:h-[350px] bg-cover bg-center flex items-center justify-center">
-        <h1 className="text-3xl md:text-5xl font-light">
-          Products
-        </h1>
-      </div>
-
-
-      {/* MAIN SECTION */}
-
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 grid grid-cols-1 lg:grid-cols-4 gap-10">
-
-
-        {/* SORT OPTION */}
-
-        <div className="lg:order-2">
-
-          <h3 className="text-lg mb-4">
-            Sort By
-          </h3>
-
-          <select
-            onChange={(e) => setSort(e.target.value)}
-            className="bg-black border border-gray-600 p-2 w-full"
-          >
-            <option value="">Featured</option>
-            <option value="low">Price Low → High</option>
-            <option value="high">Price High → Low</option>
-          </select>
-
-        </div>
-
-
-        {/* PRODUCT GRID */}
-
-        <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-6">
-
-          {sortedProducts.map((product) => (
-
-            <div
-              key={product.id}
-              onClick={() => navigate(`/product/${product.id}`)}
-              className="cursor-pointer group"
+          <div className="flex flex-col gap-3 min-w-[240px]">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-[#c9a27d] font-bold">Sort By</span>
+            <select
+              onChange={(e) => setSort(e.target.value)}
+              className="bg-[#0d0d0d] border border-white/10 p-3 rounded-xl text-xs uppercase tracking-widest focus:border-[#c9a27d]/50 transition-colors outline-none"
             >
-
-              <div className="overflow-hidden">
-
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-[180px] md:h-[260px] object-cover group-hover:scale-105 transition duration-300"
-                />
-
-              </div>
-
-              <h3 className="mt-3 text-sm md:text-lg">
-                {product.name}
-              </h3>
-
-              <div className="flex gap-2 items-center mt-1">
-
-                <span className="text-sm md:text-lg font-semibold">
-                  ₹{product.price}
-                </span>
-
-                <span className="line-through text-gray-400 text-xs md:text-sm">
-                  ₹{product.oldPrice}
-                </span>
-
-              </div>
-
-            </div>
-
-          ))}
-
+              <option value="">Featured</option>
+              <option value="low">Price: Low to High</option>
+              <option value="high">Price: High to Low</option>
+            </select>
+          </div>
         </div>
 
-      </div>
+        {loading ? (
+          <div className="h-64 flex items-center justify-center">
+            <div className="w-10 h-10 border-4 border-[#c9a27d]/20 border-t-[#c9a27d] rounded-full animate-spin"></div>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="h-64 flex flex-col items-center justify-center text-center">
+            <p className="text-[#c9a27d]/60 italic font-light text-xl">
+              No products found in our gallery.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
+            {sortedProducts.map((product) => (
+              <div
+                key={product._id}
+                onClick={() => navigate(`/product/${product._id}`)}
+                className="cursor-pointer group flex flex-col bg-[#0d0d0d]/40 backdrop-blur-sm border border-white/5 hover:border-[#c9a27d]/30 transition-all duration-500 p-3 rounded-[1.5rem]"
+              >
+                <div className="relative overflow-hidden aspect-square rounded-[1rem] mb-3 shadow-2xl bg-black">
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-out grayscale-[0.2] group-hover:grayscale-0"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                    <span className="text-[9px] uppercase font-bold tracking-[0.2em] bg-white text-black px-4 py-1.5 rounded-full whitespace-nowrap shadow-xl">
+                      Quick View
+                    </span>
+                  </div>
+                  {product.oldPrice && (
+                    <div className="absolute top-3 right-3 bg-[#c9a27d] text-black text-[8px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg">
+                      Sale
+                    </div>
+                  )}
+                </div>
 
+                <div className="px-1 text-center space-y-2.5">
+                  <div className="space-y-0.5">
+                    <h3 className="text-sm md:text-base font-light tracking-wide text-white group-hover:text-[#c9a27d] transition-colors duration-300 line-clamp-1">
+                      {product.name}
+                    </h3>
+                    <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-[#c9a27d]/50 font-medium">
+                      {product.category}
+                    </p>
+                  </div>
+
+                  <div className="bg-white/[0.02] rounded-2xl p-3 border border-white/[0.03] group-hover:bg-white/[0.04] group-hover:border-[#c9a27d]/10 transition-all duration-500">
+                    <div className="flex flex-col items-center gap-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg md:text-xl font-bold text-white tracking-tight">
+                          Rs: {product.price.toLocaleString()}
+                        </span>
+                        {product.oldPrice && (
+                          <span className="line-through text-white/50 text-[10px] md:text-xs font-light decoration-[#c9a27d]/40">
+                            {product.oldPrice.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

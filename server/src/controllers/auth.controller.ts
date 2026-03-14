@@ -7,41 +7,41 @@ import { generateToken } from '../utils/generateToken'
 //signup
 
 export const signup = async (req: Request, res: Response) => {
-    try {
-        const { name, email, password, role } = req.body;
+  try {
+    const { name, email, password, role } = req.body;
 
-        const exist = await User.findOne({ email })
-        if (exist) {
-            return res.status(400).json({
-                message: "User already exists"
-            })
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10)
-
-        const user = await User.create({
-            name,
-            email,
-            password: hashedPassword,
-            role
-        });
-
-        const token = generateToken(user._id.toString(), user.role)
-
-        res.cookie("toke", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
-
-        res.status(201).json({
-            message: "Signup Successful",
-            user
-        })
-    } catch (error) {
-        res.status(500).json({ message: "Server Error" })
+    const exist = await User.findOne({ email })
+    if (exist) {
+      return res.status(400).json({
+        message: "User already exists"
+      })
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role
+    });
+
+    const token = generateToken(user._id.toString(), user.role)
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // Changed for localhost
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    })
+
+    res.status(201).json({
+      message: "Signup Successful",
+      user
+    })
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" })
+  }
 }
 
 
@@ -69,8 +69,8 @@ export const login = async (req: Request, res: Response) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: false, // Changed for localhost
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
@@ -80,6 +80,7 @@ export const login = async (req: Request, res: Response) => {
     });
 
   } catch (error) {
+    console.error("Login Error:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -87,13 +88,29 @@ export const login = async (req: Request, res: Response) => {
 
 //logout
 
-export const logout = async (req:Request, res:Response)=>{
-    res.cookie('toke','',{
-        httpOnly:true,
-        expires:new Date(0)
-    })
+export const logout = async (req: Request, res: Response) => {
+  res.cookie('token', '', {
+    httpOnly: true,
+    expires: new Date(0)
+  })
 
-    res.json({
-        message:"Logged out successfully"
-    })
+  res.json({
+    message: "Logged out successfully"
+  })
 }
+
+// Get Current User
+export const getMe = async (req: any, res: Response) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};

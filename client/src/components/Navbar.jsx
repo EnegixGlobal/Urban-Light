@@ -1,11 +1,31 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { User, Heart, ShoppingCart } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Heart, ShoppingCart, Lightbulb, LogOut, LayoutDashboard } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser, openAuthModal } from "../redux/authSlice";
+import { resetCart } from "../redux/cartSlice";
+import { resetWishlist } from "../redux/wishlistSlice";
 
 const Navbar = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { totalQuantity } = useSelector((state) => state.cart);
+  const { items: wishlist } = useSelector((state) => state.wishlist);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser());
+      dispatch(resetCart());
+      dispatch(resetWishlist());
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
   return (
     <>
@@ -15,7 +35,8 @@ const Navbar = () => {
 
         {/* LOGO */}
 
-        <Link to="/" className="text-[#c9a27d] text-xl md:text-2xl font-bold tracking-widest uppercase">
+        <Link to="/" className="flex items-center gap-2 text-[#c9a27d] text-xl md:text-2xl font-bold tracking-widest uppercase">
+          <Lightbulb size={24} />
           Urban Lights Luxury
         </Link>
 
@@ -23,20 +44,56 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4 md:gap-6">
 
-          <Link to="/wishlist" className="text-[#c9a27d] hover:text-white">
+          <Link to="/wishlist" className="text-[#c9a27d] hover:text-white relative">
             <Heart size={20} />
+            {isAuthenticated && wishlist.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-white text-black text-[8px] font-bold w-3 h-3 flex items-center justify-center rounded-full">
+                {wishlist.length}
+              </span>
+            )}
           </Link>
 
-          <Link to="/cart" className="text-[#c9a27d] hover:text-white">
+          <Link to="/cart" className="text-[#c9a27d] hover:text-white relative">
             <ShoppingCart size={20} />
+            {isAuthenticated && totalQuantity > 0 && (
+              <span className="absolute -top-2 -right-2 bg-white text-black text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                {totalQuantity}
+              </span>
+            )}
           </Link>
 
-          <Link
-            to="/login"
-            className="flex items-center gap-2 text-[#c9a27d] hover:text-white"
-          >
-            <User size={20} />
-          </Link>
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <span className="text-[#c9a27d] font-medium hidden md:block border-r border-[#c9a27d]/30 pr-3">
+                {user?.name}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="text-[#c9a27d] hover:text-white flex items-center gap-1.5 transition-colors group"
+                title="Logout"
+              >
+                <span className="text-sm hidden sm:block">Logout</span>
+                <LogOut size={18} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
+
+              {user?.role === 'admin' && (
+                <Link
+                  to="/admin"
+                  className="text-[#c9a27d] hover:text-white flex items-center gap-1 transition-colors"
+                  title="Admin Dashboard"
+                >
+                  <LayoutDashboard size={18} />
+                </Link>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => dispatch(openAuthModal("login"))}
+              className="flex items-center gap-2 text-[#c9a27d] hover:text-white transition-colors cursor-pointer"
+            >
+              <User size={20} />
+            </button>
+          )}
 
           {/* MENU BUTTON */}
 
@@ -46,9 +103,7 @@ const Navbar = () => {
           >
             Menu
           </button>
-
         </div>
-
       </header>
 
 
@@ -92,8 +147,9 @@ const Navbar = () => {
                 <Link
                   to="/"
                   onClick={() => setMenuOpen(false)}
-                  className="text-2xl font-bold tracking-widest uppercase"
+                  className="flex items-center gap-2 text-2xl font-bold tracking-widest uppercase"
                 >
+                  <Lightbulb size={24} />
                   Urban Lights Luxury
                 </Link>
 
@@ -127,6 +183,28 @@ const Navbar = () => {
                 <Link to="/cart" onClick={() => setMenuOpen(false)}>
                   Cart
                 </Link>
+
+                {user?.role === 'admin' && (
+                  <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-[#c9a27d] flex items-center gap-2">
+                    <LayoutDashboard size={24} /> Admin Dashboard
+                  </Link>
+                )}
+
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => { handleLogout(); setMenuOpen(false); }}
+                    className="text-[#c9a27d] hover:text-white"
+                  >
+                    Logout ({user?.name.split(" ")[0]})
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { dispatch(openAuthModal("login")); setMenuOpen(false); }}
+                    className="text-[#c9a27d] hover:text-white text-left cursor-pointer"
+                  >
+                    Login
+                  </button>
+                )}
 
               </div>
 
