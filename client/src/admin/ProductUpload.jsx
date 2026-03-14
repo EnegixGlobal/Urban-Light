@@ -49,17 +49,17 @@ const ProductUpload = () => {
         setFetching(true);
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/${id}`);
-            const product = response.data.data;
+            const product = response.data?.data || {};
             setFormData({
-                name: product.name,
-                description: product.description,
-                price: product.price,
+                name: product.name || "",
+                description: product.description || "",
+                price: product.price || "",
                 oldPrice: product.oldPrice || "",
-                category: product.category,
+                category: product.category || "Chandeliers",
                 subCategory: product.subCategory || "",
-                stock: product.stock,
+                stock: product.stock || "",
                 isFeatured: product.isFeatured || false,
-                images: product.images.length > 0 ? product.images : [""],
+                images: (product.images && Array.isArray(product.images) && product.images.length > 0) ? product.images : [""],
                 specifications: {
                     material: product.specifications?.material || "",
                     dimensions: product.specifications?.dimensions || "",

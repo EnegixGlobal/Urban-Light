@@ -58,8 +58,8 @@ const Hero = () => {
   const exploreImages = [Explore1, Explore2, Explore3, Explore4, Explore5, Explore6];
 
   const dispatch = useDispatch();
-  const { items: products } = useSelector((state) => state.products);
-  const featuredProducts = products.filter(p => p.isFeatured).slice(0, 6);
+  const { items: products } = useSelector((state) => state.products || { items: [] });
+  const featuredProducts = (products || []).filter(p => !!p?.isFeatured).slice(0, 6);
 
   const [testimonialIndex, setTestimonialIndex] = useState(0);
 
