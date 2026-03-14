@@ -128,12 +128,12 @@ const AdminProductList = () => {
                                         >
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-14 h-14 rounded-xl overflow-hidden bg-black border border-white/5 shrink-0">
-                                                        <img src={product.images[0]} alt="" className="w-full h-full object-cover" />
+                                                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-black border border-white/5 shrink-0">
+                                                        <img src={product.images?.[0] ?? ''} alt="" className="w-full h-full object-cover" />
                                                     </div>
                                                     <div>
                                                         <p className="text-white font-medium group-hover:text-[#c9a27d] transition-colors">{product.name}</p>
-                                                        <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">ID: ...{product._id.slice(-6)}</p>
+                                                        <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">ID: ...{product._id ? product._id.slice(-6) : '----'}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -142,16 +142,24 @@ const AdminProductList = () => {
                                             </td>
                                             <td className="px-8 py-6">
                                                 <div className="flex flex-col">
-                                                    <span className="text-white font-medium">₹{product.price.toLocaleString()}</span>
+                                                    <span className="text-white font-medium">₹{(product.price || 0).toLocaleString()}</span>
                                                     {product.oldPrice && (
-                                                        <span className="text-[10px] text-white/30 line-through">₹{product.oldPrice.toLocaleString()}</span>
+                                                        <span className="text-[10px] text-white/30 line-through">₹{(product.oldPrice || 0).toLocaleString()}</span>
                                                     )}
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-2">
-                                                    <div className={`w-1.5 h-1.5 rounded-full ${product.stock > 10 ? 'bg-green-500' : product.stock > 0 ? 'bg-yellow-500' : 'bg-red-500'}`} />
-                                                    <span className="text-xs text-white/60">{product.stock} units</span>
+                                                    {(() => {
+                                                        const stock = Number(product.stock || 0);
+                                                        const color = stock > 10 ? 'bg-green-500' : stock > 0 ? 'bg-yellow-500' : 'bg-red-500';
+                                                        return (
+                                                            <>
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${color}`} />
+                                                                <span className="text-xs text-white/60">{stock} units</span>
+                                                            </>
+                                                        );
+                                                    })()}
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
