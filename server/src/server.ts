@@ -25,14 +25,12 @@ app.use(cors({
   credentials: true
 }));
 
-// Serve static files
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-
+// Local static files serving removed (now using Cloudinary for images)
 connectDb();
 
 
 app.get("/", (req, res) => {
-  res.send("Hello from TypeScript + Express + MongoDB!");
+  res.send("Hello");
 });
 
 app.use("/api/auth", authRoutes);

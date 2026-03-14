@@ -31,13 +31,16 @@ const Toast = ({ message, type = "success", onClose, duration = 4000 }) => {
                     className="absolute bottom-0 left-0 h-1 bg-[#c9a27d]"
                 />
 
-                <div className={`p-2 rounded-xl ${type === "success" ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"}`}>
-                    {type === "success" ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+                <div className={`p-2 rounded-xl ${type === "success" ? "bg-green-500/10 text-green-500" :
+                        type === "info" ? "bg-blue-500/10 text-blue-500" : "bg-red-500/10 text-red-500"
+                    }`}>
+                    {type === "success" ? <CheckCircle size={20} /> :
+                        type === "info" ? <AlertCircle size={20} /> : <AlertCircle size={20} />}
                 </div>
 
                 <div className="flex-1">
                     <p className="text-white text-sm font-medium leading-tight">
-                        {type === "success" ? "Success" : "Error"}
+                        {type === "success" ? "Success" : type === "info" ? "Info" : "Error"}
                     </p>
                     <p className="text-[#c9a27d]/60 text-xs mt-1">
                         {message}

@@ -1,19 +1,29 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { protect } from "../middleware/auth.middleware";
 import { authorized } from "../middleware/role.middleware";
 
 const router = express.Router();
 
-// Multer Config
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    },
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Cloudinary Storage Config
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "urban_product", // Folder in Cloudinary
+        allowed_formats: ["jpg", "jpeg", "png", "webp"],
+        // Resize image to max 1200x1200px while maintaining aspect ratio, and auto-compress quality/format
+        transformation: [{ width: 1200, height: 1200, crop: "limit", quality: "auto", fetch_format: "auto" }],
+    } as any, // using 'as any' to avoid TS errors for params typing depending on installed @types
 });
 
 const upload = multer({
@@ -38,7 +48,9 @@ router.post("/", protect, authorized("admin"), upload.single("image"), (req, res
     if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
     }
-    const url = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+
+    // Cloudinary automatically returns the URL in req.file.path
+    const url = req.file.path;
     res.json({ url });
 });
 
