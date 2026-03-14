@@ -67,11 +67,10 @@ const Footer = () => {
             <div>
               <h3 className="text-sm font-semibold mb-2">Contact</h3>
               <p className="opacity-80 text-xs mb-2">
-                +91 9971772611
+                +91 9835905906
               </p>
               <p className="text-xs opacity-70">
-                76–86 Manners Street <br />
-                Wellington 6140, New Zealand
+                1st floor Skyline building, kadru, Ranchi-834002 <br />
               </p>
             </div>
 
