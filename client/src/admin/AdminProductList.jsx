@@ -37,13 +37,15 @@ const AdminProductList = () => {
     };
 
     const filteredProducts = (products || []).filter(p => {
-        const name = (p?.name || "").toString();
-        const categoryName = (p?.category || "").toString();
-        const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                             categoryName.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === "All" || categoryName === selectedCategory;
-        return matchesSearch && matchesCategory;
-    });
+    const matchesSearch =
+        p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.category?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesCategory =
+        selectedCategory === "All" || p.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+});
 
     return (
         <div className="space-y-8 pb-20">

@@ -54,12 +54,20 @@ const testimonials = [
 ];
 
 const Hero = () => {
-
-  const exploreImages = [Explore1, Explore2, Explore3, Explore4, Explore5, Explore6];
+  const exploreImages = [
+    Explore1,
+    Explore2,
+    Explore3,
+    Explore4,
+    Explore5,
+    Explore6,
+  ];
 
   const dispatch = useDispatch();
-  const { items: products } = useSelector((state) => state.products || { items: [] });
-  const featuredProducts = (products || []).filter(p => !!p?.isFeatured).slice(0, 6);
+  const { items: products } = useSelector((state) => state.products);
+  const featuredProducts = (products || [])
+    .filter((p) => p.isFeatured)
+    .slice(0, 6);
 
   const [testimonialIndex, setTestimonialIndex] = useState(0);
 
@@ -75,9 +83,7 @@ const Hero = () => {
 
   return (
     <>
-
       {/* ================= HERO ================= */}
-
 
       <section
         className="relative min-h-[80vh] md:min-h-screen flex items-center bg-cover bg-center"
@@ -87,47 +93,35 @@ const Hero = () => {
 
         {/* LEFT SIDE CONTENT */}
         <div className="relative z-10 w-full px-8 md:px-20 lg:px-28 py-20 flex justify-start">
-
           <div className="max-w-xl">
-
             <h1 className="text-white font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
-
               Urban Lights Luxury <br />
-
               <span className="text-[#c9a27d]">Illuminate Your</span> <br />
-
               Space in Style
-
             </h1>
 
             {/* Button Link */}
 
             <Link to="/products">
-
               <button className="mt-8 bg-[#c9a27d] px-8 py-3 text-black font-semibold rounded-md hover:bg-[#c9a635] transition">
-
                 Shop Chandeliers
-
               </button>
-
             </Link>
-
           </div>
-
         </div>
-
       </section>
 
       {/* ================= COLLECTION ================= */}
 
       <section className="bg-black py-16 md:py-24">
-
         <div className="max-w-7xl mx-auto px-6">
-
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-10 place-items-center">
-
             {collections.map((item, index) => (
-              <Link to={`/category/${item.name}`} key={index} className="text-center group cursor-pointer block">
+              <Link
+                to={`/category/${item.name}`}
+                key={index}
+                className="text-center group cursor-pointer block"
+              >
                 <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full overflow-hidden group-hover:scale-105 transition border-2 border-transparent group-hover:border-[#c9a27d]/20">
                   <img
                     src={item.image}
@@ -140,28 +134,22 @@ const Hero = () => {
                 </p>
               </Link>
             ))}
-
           </div>
-
         </div>
-
       </section>
-
 
       {/* ================= EXPLORE ================= */}
 
       <section className="bg-[#3f372e] py-20 text-white">
-
         <div className="max-w-7xl mx-auto px-6 text-center">
-
           <h2 className="text-3xl md:text-5xl font-serif text-[#c9a27d] mb-6">
             Explore Urban Lights Luxury
           </h2>
 
           <p className="max-w-xl mx-auto text-gray-300 mb-14">
-            Discover our premium lighting collection crafted for luxury interiors.
+            Discover our premium lighting collection crafted for luxury
+            interiors.
           </p>
-
 
           {/* MOBILE SLIDER */}
           <div className="flex md:hidden gap-6 overflow-x-auto pb-4 scroll-smooth px-4">
@@ -191,7 +179,6 @@ const Hero = () => {
               </div>
             ))}
           </div>
-
 
           {/* DESKTOP GRID */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-10">
@@ -223,76 +210,51 @@ const Hero = () => {
             ))}
           </div>
 
-
           {/* Explore More Button */}
 
           <div className="mt-14">
-
             <Link to="/products">
-
               <button className="bg-[#c9a27d] text-black px-10 py-3 rounded-full font-semibold hover:bg-[#d8b48a] transition">
-
                 Explore More
-
               </button>
-
             </Link>
-
           </div>
-
         </div>
-
       </section>
-
 
       {/* ================= PREMIUM SPLIT ================= */}
 
       <section className="flex flex-col lg:flex-row">
-
         <div className="lg:w-1/2 bg-[#b89572] flex items-center">
-
           <div className="px-8 md:px-16 py-16">
-
             <h1 className="text-3xl md:text-5xl font-semibold text-[#3b342d] leading-tight mb-6">
-
               Premium Lighting <br /> & Chandeliers
-
             </h1>
 
             <p className="text-[#3b342d] max-w-md">
-
-              From modern homes to luxury hotels, we design lighting that brings warmth and elegance.
-
+              From modern homes to luxury hotels, we design lighting that brings
+              warmth and elegance.
             </p>
-
           </div>
-
         </div>
 
         <div className="lg:w-1/2">
-
           <img
             src={banner}
             className="w-full h-[350px] md:h-[500px] lg:h-[650px] object-cover"
           />
-
         </div>
-
       </section>
-
 
       {/* ================= TESTIMONIAL ================= */}
 
       <section className="bg-[#3f372e] py-20">
-
         <div className="max-w-4xl mx-auto px-6 text-center">
-
           <h2 className="text-3xl md:text-5xl font-serif text-[#c9a27d] mb-12">
             What Our Clients Say
           </h2>
 
           <AnimatePresence mode="wait">
-
             <motion.div
               key={testimonialIndex}
               initial={{ opacity: 0, y: 30 }}
@@ -301,56 +263,35 @@ const Hero = () => {
               transition={{ duration: 0.8 }}
               className="border border-[#c9a27d]/40 p-8 text-white"
             >
-
               <p className="italic mb-4">
-
                 “{testimonials[testimonialIndex].text}”
-
               </p>
 
               <p className="text-[#c9a27d] text-sm">
-
                 — {testimonials[testimonialIndex].author}
-
               </p>
-
             </motion.div>
-
           </AnimatePresence>
-
         </div>
-
       </section>
-
 
       {/* ================= CTA ================= */}
 
       <section className="bg-black py-24">
-
         <div className="max-w-3xl mx-auto text-center px-6">
-
           <h2 className="text-3xl md:text-5xl text-white font-serif mb-6">
-
             Let’s Light Up Your Space
-
           </h2>
 
           <p className="text-gray-400 mb-8">
-
             Connect with us to design lighting that defines luxury and elegance.
-
           </p>
 
           <button className="bg-[#c9a27d] px-10 py-3 rounded-full text-black font-semibold">
-
             Contact Us
-
           </button>
-
         </div>
-
       </section>
-
     </>
   );
 };

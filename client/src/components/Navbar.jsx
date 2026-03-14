@@ -10,7 +10,7 @@ import { resetWishlist } from "../redux/wishlistSlice";
 const Navbar = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { user, isAuthenticated, loading: authLoading } = useSelector((state) => state.auth);
   const { totalQuantity } = useSelector((state) => state.cart);
   const { items: wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
@@ -44,9 +44,9 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4 md:gap-6">
 
-          <Link to="/wishlist" className="text-[#c9a27d] hover:text-white relative">
+            <Link to="/wishlist" className="text-[#c9a27d] hover:text-white relative">
             <Heart size={20} />
-            {isAuthenticated && wishlist.length > 0 && (
+            {isAuthenticated && !authLoading && wishlist.length > 0 && (
               <span className="absolute -top-1 -right-1 bg-white text-black text-[8px] font-bold w-3 h-3 flex items-center justify-center rounded-full">
                 {wishlist.length}
               </span>
@@ -55,14 +55,14 @@ const Navbar = () => {
 
           <Link to="/cart" className="text-[#c9a27d] hover:text-white relative">
             <ShoppingCart size={20} />
-            {isAuthenticated && totalQuantity > 0 && (
+            {isAuthenticated && !authLoading && totalQuantity > 0 && (
               <span className="absolute -top-2 -right-2 bg-white text-black text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
                 {totalQuantity}
               </span>
             )}
           </Link>
 
-          {isAuthenticated ? (
+          {isAuthenticated && !authLoading ? (
             <div className="flex items-center gap-3">
               <span className="text-[#c9a27d] font-medium hidden md:block border-r border-[#c9a27d]/30 pr-3">
                 {user?.name}
@@ -190,7 +190,7 @@ const Navbar = () => {
                   </Link>
                 )}
 
-                {isAuthenticated ? (
+                {isAuthenticated && !authLoading ? (
                   <button
                     onClick={() => { handleLogout(); setMenuOpen(false); }}
                     className="text-[#c9a27d] hover:text-white"
