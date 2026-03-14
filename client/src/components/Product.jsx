@@ -6,14 +6,14 @@ import { fetchProducts } from "../redux/productSlice";
 const Product = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { items: products, loading } = useSelector((state) => state.products);
+  const { items: products = [], loading } = useSelector((state) => state.products || { items: [] });
   const [sort, setSort] = useState("");
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const sortedProducts = [...products].sort((a, b) => {
+  const sortedProducts = [...(products || [])].sort((a, b) => {
     if (sort === "low") return a.price - b.price;
     if (sort === "high") return b.price - a.price;
     return 0;

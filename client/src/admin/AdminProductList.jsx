@@ -36,12 +36,16 @@ const AdminProductList = () => {
         }
     };
 
-    const filteredProducts = products.filter(p => {
-        const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                             p.category.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
-        return matchesSearch && matchesCategory;
-    });
+    const filteredProducts = (products || []).filter(p => {
+    const matchesSearch =
+        p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.category?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesCategory =
+        selectedCategory === "All" || p.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+});
 
     return (
         <div className="space-y-8 pb-20">
