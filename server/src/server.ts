@@ -17,17 +17,34 @@ const PORT = process.env.PORT || 8000;
 
 const app = express();
 
-
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000", "http://localhost:4173", "https://urban-light.vercel.app"],
-  credentials: true
-}));
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:4173",
+  "https://urban-light.vercel.app",
+  "https://urban-light.onrender.com",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS policy: Origin not allowed"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+  }),
+);
 
 // Local static files serving removed (now using Cloudinary for images)
 connectDb();
-
 
 app.get("/", (req, res) => {
   res.send("Hello");
@@ -39,7 +56,6 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/upload", uploadRoutes);
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
