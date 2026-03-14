@@ -13,7 +13,8 @@ const Product = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const sortedProducts = [...(products || [])].sort((a, b) => {
+  const productsArray = Array.isArray(products) ? products : (products?.items || []);
+  const sortedProducts = [...productsArray].sort((a, b) => {
     if (sort === "low") return a.price - b.price;
     if (sort === "high") return b.price - a.price;
     return 0;
@@ -63,8 +64,8 @@ const Product = () => {
               >
                 <div className="relative overflow-hidden aspect-square rounded-[1rem] mb-3 shadow-2xl bg-black">
                   <img
-                    src={product.images[0]}
-                    alt={product.name}
+                    src={product.images?.[0] ?? ''}
+                    alt={product.name || ''}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-out grayscale-[0.2] group-hover:grayscale-0"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
@@ -94,7 +95,7 @@ const Product = () => {
                     <div className="flex flex-col items-center gap-0.5">
                       <div className="flex items-center gap-2">
                         <span className="text-lg md:text-xl font-bold text-white tracking-tight">
-                          Rs: {product.price.toLocaleString()}
+                          Rs: {(product.price || 0).toLocaleString()}
                         </span>
                         {product.oldPrice && (
                           <span className="line-through text-white/50 text-[10px] md:text-xs font-light decoration-[#c9a27d]/40">

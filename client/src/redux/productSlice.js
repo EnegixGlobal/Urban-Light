@@ -52,7 +52,14 @@ const productSlice = createSlice({
             })
             .addCase(fetchProducts.fulfilled, (state, action) => {
                 state.loading = false;
-                state.items = action.payload;
+                // Normalize payload to always be an array of products.
+                if (Array.isArray(action.payload)) {
+                    state.items = action.payload;
+                } else if (action.payload && Array.isArray(action.payload.items)) {
+                    state.items = action.payload.items;
+                } else {
+                    state.items = [];
+                }
             })
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.loading = false;
