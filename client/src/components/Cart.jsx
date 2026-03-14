@@ -63,7 +63,7 @@ const Cart = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
-                      className="flex gap-6 bg-[#0d0d0d] border border-white/5 p-4 rounded-[2rem] group"
+                      className="flex gap-6 bg-[#0d0d0d] border border-white/5 p-4 rounded-4xl group"
                     >
                       <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden bg-black shrink-0 relative">
                         <img
