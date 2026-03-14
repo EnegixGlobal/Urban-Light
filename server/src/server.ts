@@ -33,8 +33,6 @@ app.use(
   }),
 );
 
-app.options("*", cors());
-
 // Local static files serving removed (now using Cloudinary for images)
 connectDb();
 
