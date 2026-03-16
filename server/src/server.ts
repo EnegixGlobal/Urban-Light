@@ -8,8 +8,8 @@ import connectDb from "./config/db";
 import authRoutes from "./routes/auth.route";
 import productRoutes from "./routes/product.route";
 import adminRoutes from "./routes/admin.route";
-import cartRoutes from "./routes/cart.route";
 import wishlistRoutes from "./routes/wishlist.route";
+import orderRoutes from "./routes/order.route";
 import uploadRoutes from "./routes/upload.route";
 import path from "path";
 
@@ -43,8 +43,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
 
 app.listen(PORT, () => {

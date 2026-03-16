@@ -143,9 +143,11 @@ const Cart = () => {
                 </div>
               </div>
 
-              <button className="w-full bg-[#c9a27d] text-black h-14 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-white transition-all shadow-2xl active:scale-95">
-                Proceed to Checkout
-              </button>
+              <Link to="/checkout" className="block w-full">
+                <button className="w-full bg-[#c9a27d] text-black h-14 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-white transition-all shadow-2xl active:scale-95">
+                  Proceed to Checkout
+                </button>
+              </Link>
 
               <p className="text-[9px] text-white/20 text-center mt-6 uppercase tracking-[0.2em] font-medium leading-relaxed">
                 Security and discretion guaranteed through<br />our encrypted checkout portal
