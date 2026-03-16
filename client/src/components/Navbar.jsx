@@ -218,10 +218,12 @@ const Navbar = () => {
                   <h3 className="text-sm mb-4">
                     CONTACT US
                   </h3>
-
                   <p className="text-sm leading-6">
-                    76-86 Manners Street <br />
-                    Wellington 6140, New Zealand
+                  1st floor Skyline building, kadru, Ranchi-834002
+                  <br />
+                  +91 9835905906
+                  <br />
+                  UrbanLightsranchi@gmail.com
                   </p>
 
                 </div>
