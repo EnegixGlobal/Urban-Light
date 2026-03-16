@@ -15,6 +15,7 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Wishlist from "./components/Wishlist";
 import Cart from "./components/Cart";
+import Checkout from "./components/Checkout";
 
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -30,6 +31,7 @@ import AdminDashboard from "./admin/AdminDashboard";
 import AdminOverview from "./admin/AdminOverview";
 import ProductUpload from "./admin/ProductUpload";
 import AdminProductList from "./admin/AdminProductList";
+import AdminCustomerList from "./admin/AdminCustomerList";
 import { fetchProducts } from "./redux/productSlice";
 import { loadCartFromStorage } from "./redux/cartSlice";
 import { loadWishlistFromStorage } from "./redux/wishlistSlice";
@@ -103,6 +105,9 @@ function App() {
         {/* Cart (Protected) */}
         <Route path="/cart" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <ProtectedRoute><Cart /></ProtectedRoute>} />
 
+        {/* Checkout (Protected) */}
+        <Route path="/checkout" element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <ProtectedRoute><Checkout /></ProtectedRoute>} />
+
         {/* Admin Dashboard (Protected & Role Based) */}
         <Route
           path="/admin"
@@ -118,7 +123,7 @@ function App() {
           <Route path="products/add" element={<ProductUpload />} />
           <Route path="products/edit/:id" element={<ProductUpload />} />
           <Route path="orders" element={<div className="text-white">Order Management (Coming Soon)</div>} />
-          <Route path="customers" element={<div className="text-white">Customer Management (Coming Soon)</div>} />
+          <Route path="customers" element={<AdminCustomerList />} />
           <Route path="settings" element={<div className="text-white">Admin Settings (Coming Soon)</div>} />
         </Route>
 

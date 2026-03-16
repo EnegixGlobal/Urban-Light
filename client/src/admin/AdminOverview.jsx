@@ -28,25 +28,25 @@ const AdminOverview = () => {
         {
             label: "Total Revenue",
             value: `₹${statsData?.totalRevenue?.toLocaleString() || '0'}`,
-            change: statsData?.revenueChange || "+0%",
-            icon: <DollarSign className="text-green-500" />
+            change: "Coming Soon",
+            icon: <DollarSign className="text-gray-500" />
         },
         {
             label: "Total Orders",
             value: statsData?.totalOrders?.toString() || '0',
-            change: statsData?.ordersChange || "+0%",
-            icon: <ShoppingBag className="text-blue-500" />
+            change: "Coming Soon",
+            icon: <ShoppingBag className="text-gray-500" />
         },
         {
             label: "Total Products",
             value: statsData?.totalProducts?.toString() || '0',
-            change: "Live",
+            change: `${statsData?.outOfStockProducts?.toString() || '0'} Out of Stock`,
             icon: <Database className="text-purple-500" />
         },
         {
             label: "Active Customers",
             value: statsData?.totalUsers?.toString() || '0',
-            change: statsData?.usersChange || "+0%",
+            change: "Registered",
             icon: <Users className="text-[#c9a27d]" />
         },
     ];
@@ -105,45 +105,51 @@ const AdminOverview = () => {
                         <h3 className="text-xl font-light">Recent Orders</h3>
                         <button className="text-[#c9a27d] text-sm hover:underline cursor-pointer">View All</button>
                     </div>
-                    <div className="space-y-6">
-                        {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="flex items-center justify-between py-4 border-b border-white/5 last:border-0">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-[#c9a27d]">
-                                        <Package size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium">Crystal Chandelier XL</p>
-                                        <p className="text-[10px] text-[#c9a27d]/60 uppercase tracking-widest">Order #URB-2931 / 2m ago</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-sm font-semibold">₹84,500</p>
-                                    <span className="text-[10px] text-green-500 bg-green-500/10 px-2 py-1 rounded-full uppercase tracking-tighter">Paid</span>
-                                </div>
-                            </div>
-                        ))}
+                    <div className="flex flex-col items-center justify-center py-10 text-center space-y-3">
+                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center text-[#c9a27d]/40 mb-2">
+                            <Package size={24} />
+                        </div>
+                        <h4 className="text-lg font-medium text-white/80">Order Management is Upcoming</h4>
+                        <p className="text-sm text-white/50 max-w-sm">Order tracking, transaction processing, and automated invoices are currently being developed and will be integrated soon.</p>
                     </div>
                 </div>
 
                 {/* CUSTOMER FEEDBACK - PLACEHOLDER */}
                 <div className="bg-[#111] rounded-3xl border border-[#c9a27d]/10 p-8 flex flex-col">
                     <h3 className="text-xl font-light mb-8">Latest Reviews</h3>
-                    <div className="flex-1 space-y-8">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="space-y-2">
-                                <div className="flex gap-1">
-                                    {[1, 2, 3, 4, 5].map(s => <Star key={s} size={12} className="fill-[#c9a27d] text-[#c9a27d]" />)}
+                    <div className="flex-1 space-y-8 overflow-y-auto pr-2">
+                        {statsData?.latestReviews && statsData.latestReviews.length > 0 ? (
+                            statsData.latestReviews.map((review, i) => (
+                                <div key={i} className="space-y-2 pb-4 border-b border-white/5 last:border-0">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex gap-1">
+                                            {[...Array(5)].map((_, s) => (
+                                                <Star key={s} size={12} className={s < review.rating ? "fill-[#c9a27d] text-[#c9a27d]" : "text-white/20"} />
+                                            ))}
+                                        </div>
+                                        <span className="text-[10px] text-[#c9a27d]/40 truncate max-w-[120px]" title={review.productName}>
+                                            {review.productName}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm italic text-white/80 leading-relaxed">
+                                        "{review.comment}"
+                                    </p>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-[#c9a27d]/20 flex items-center justify-center text-[10px] font-bold text-[#c9a27d]">
+                                            {review.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="text-[10px] text-[#c9a27d]/60 uppercase tracking-widest font-medium">{review.name}</span>
+                                        <span className="text-[10px] text-white/30 ml-auto">
+                                            {new Date(review.createdAt).toLocaleDateString()}
+                                        </span>
+                                    </div>
                                 </div>
-                                <p className="text-sm italic text-white/80 leading-relaxed">
-                                    "The lighting quality is exceptional. It transformed our dining room into a palace gallery."
-                                </p>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-[#c9a27d]/20" />
-                                    <span className="text-[10px] text-[#c9a27d]/60 uppercase tracking-widest font-medium">Vikram Singh</span>
-                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center text-white/40 text-sm py-10">
+                                No reviews have been submitted yet.
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
             </div>
