@@ -44,11 +44,15 @@ function App() {
 
 
   useEffect(() => {
-    dispatch(checkAuth());
+    // Only check auth if we already have a stored user
+    // This prevents an unnecessary /auth/user call for completely new visitors
+    if (user) {
+      dispatch(checkAuth());
+    }
     dispatch(fetchProducts());
     dispatch(loadCartFromStorage());
     dispatch(loadWishlistFromStorage());
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   return (
     <Router>
