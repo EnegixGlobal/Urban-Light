@@ -1,10 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Package, Users, ShoppingBag, Settings, LogOut, Lightbulb } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../redux/authSlice";
 
 const AdminSidebar = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const menuItems = [
         { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/admin/dashboard" },
@@ -42,7 +43,10 @@ const AdminSidebar = () => {
 
             <div className="p-6 border-t border-[#c9a27d]/10">
                 <button
-                    onClick={() => dispatch(logoutUser())}
+                    onClick={async () => {
+                        await dispatch(logoutUser());
+                        navigate("/login");
+                    }}
                     className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-500/70 hover:bg-red-500/10 hover:text-red-500 transition-all duration-300 cursor-pointer"
                 >
                     <LogOut size={20} />
