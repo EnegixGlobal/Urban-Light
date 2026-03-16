@@ -1,67 +1,42 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/cart`;
+const STORAGE_KEY = "urban_light_cart";
 
-// Fetch cart from database
-export const fetchCart = createAsyncThunk("cart/fetchCart", async (_, { rejectWithValue }) => {
+// Helpers for localStorage-based cart
+const loadCartFromStorageHelper = () => {
+    if (typeof window === "undefined") return { items: [] };
     try {
-        const response = await axios.get(API_URL);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to fetch cart");
+        const stored = window.localStorage.getItem(STORAGE_KEY);
+        if (!stored) return { items: [] };
+        const parsed = JSON.parse(stored);
+        if (!parsed || !Array.isArray(parsed.items)) return { items: [] };
+        return { items: parsed.items };
+    } catch {
+        return { items: [] };
     }
-});
+};
 
-// Add to cart in database
-export const addToCartAsync = createAsyncThunk("cart/addItem", async (productId, { rejectWithValue }) => {
+const saveCartToStorageHelper = (items) => {
+    if (typeof window === "undefined") return;
     try {
-        const response = await axios.post(`${API_URL}/add`, { productId });
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to add item");
+        const value = JSON.stringify({ items });
+        window.localStorage.setItem(STORAGE_KEY, value);
+    } catch {
+        // ignore storage errors
     }
-});
+};
 
-// Remove from cart (decrease quantity) in database
-export const removeFromCartAsync = createAsyncThunk("cart/removeItem", async (productId, { rejectWithValue }) => {
-    try {
-        const response = await axios.post(`${API_URL}/remove`, { productId });
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to remove item");
-    }
-});
-
-// Delete item completely from database
-export const deleteFromCartAsync = createAsyncThunk("cart/deleteItem", async (productId, { rejectWithValue }) => {
-    try {
-        const response = await axios.delete(`${API_URL}/item/${productId}`);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to delete item");
-    }
-});
-
-// Clear cart in database
-export const clearCartAsync = createAsyncThunk("cart/clearCart", async (_, { rejectWithValue }) => {
-    try {
-        const response = await axios.delete(`${API_URL}/clear`);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to clear cart");
-    }
-});
+const initialLoaded = loadCartFromStorageHelper();
 
 const initialState = {
-    items: [],
+    items: initialLoaded.items || [],
     totalQuantity: 0,
     totalAmount: 0,
     loading: false,
     error: null,
 };
 
-// Helper function to calculate totals from backend response
+// Helper function to calculate totals from cart items
 const calculateTotals = (cartItems) => {
     let totalQuantity = 0;
     let totalAmount = 0;
@@ -78,100 +53,63 @@ const calculateTotals = (cartItems) => {
     return { totalQuantity, totalAmount };
 };
 
+const recalcAndPersist = (state) => {
+    const { totalQuantity, totalAmount } = calculateTotals(state.items);
+    state.totalQuantity = totalQuantity;
+    state.totalAmount = totalAmount;
+    saveCartToStorageHelper(state.items);
+};
+
 const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        resetCart: (state) => {
-            state.items = [];
-            state.totalQuantity = 0;
-            state.totalAmount = 0;
-        }
-    },
-    extraReducers: (builder) => {
-        // Optimistic Updates for Add/Remove
-        builder.addCase(addToCartAsync.pending, (state, action) => {
-            state.loading = true;
-            const productId = action.meta.arg;
-            const item = state.items.find(i => i.productId._id === productId);
-            if (item) {
-                item.quantity += 1;
-                state.totalQuantity += 1;
-                state.totalAmount += item.productId.price;
+        loadCartFromStorage: (state) => {
+            const loaded = loadCartFromStorageHelper();
+            state.items = loaded.items || [];
+            recalcAndPersist(state);
+        },
+        addToCart: (state, action) => {
+            const product = action.payload;
+            if (!product || !product._id) return;
+
+            const existingItem = state.items.find(i => i.productId._id === product._id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                state.items.push({ productId: product, quantity: 1 });
             }
-        })
-            .addCase(removeFromCartAsync.pending, (state, action) => {
-                state.loading = true;
-                const productId = action.meta.arg;
-                const item = state.items.find(i => i.productId._id === productId);
-                if (item && item.quantity > 0) {
-                    item.quantity -= 1;
-                    state.totalQuantity -= 1;
-                    state.totalAmount -= item.productId.price;
-                    if (item.quantity === 0) {
-                        state.items = state.items.filter(i => i.productId._id !== productId);
-                    }
-                }
-            })
-            // Fetch Cart
-            .addCase(fetchCart.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(fetchCart.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = action.payload.items || [];
-                const { totalQuantity, totalAmount } = calculateTotals(state.items);
-                state.totalQuantity = totalQuantity;
-                state.totalAmount = totalAmount;
-            })
-            .addCase(fetchCart.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            // Reset state on actual server success (sync check)
-            .addCase(addToCartAsync.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = action.payload.items || [];
-                const { totalQuantity, totalAmount } = calculateTotals(state.items);
-                state.totalQuantity = totalQuantity;
-                state.totalAmount = totalAmount;
-            })
-            .addCase(removeFromCartAsync.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = action.payload.items || [];
-                const { totalQuantity, totalAmount } = calculateTotals(state.items);
-                state.totalQuantity = totalQuantity;
-                state.totalAmount = totalAmount;
-            })
-            // Error handling - Revert or Refresh
-            .addCase(addToCartAsync.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-                // Ideally, we'd roll back here, but a re-fetch is safer for consistency
-            })
-            .addCase(removeFromCartAsync.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            // Other Actions
-            .addCase(deleteFromCartAsync.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(deleteFromCartAsync.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = action.payload.items || [];
-                const { totalQuantity, totalAmount } = calculateTotals(state.items);
-                state.totalQuantity = totalQuantity;
-                state.totalAmount = totalAmount;
-            })
-            .addCase(clearCartAsync.fulfilled, (state) => {
-                state.items = [];
-                state.totalQuantity = 0;
-                state.totalAmount = 0;
-                state.loading = false;
-            });
+            recalcAndPersist(state);
+        },
+        removeFromCart: (state, action) => {
+            const productId = action.payload;
+            const existingItem = state.items.find(i => i.productId._id === productId);
+            if (!existingItem) return;
+
+            existingItem.quantity -= 1;
+            if (existingItem.quantity <= 0) {
+                state.items = state.items.filter(i => i.productId._id !== productId);
+            }
+            recalcAndPersist(state);
+        },
+        deleteFromCart: (state, action) => {
+            const productId = action.payload;
+            state.items = state.items.filter(i => i.productId._id !== productId);
+            recalcAndPersist(state);
+        },
+        clearCart: (state) => {
+            state.items = [];
+            recalcAndPersist(state);
+        },
     },
 });
 
-export const { resetCart } = cartSlice.actions;
+export const {
+    loadCartFromStorage,
+    addToCart,
+    removeFromCart,
+    deleteFromCart,
+    clearCart,
+} = cartSlice.actions;
+
 export default cartSlice.reducer;

@@ -2,37 +2,30 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../redux/productSlice";
-import { addToCartAsync } from "../redux/cartSlice";
-import { toggleWishlistAsync } from "../redux/wishlistSlice";
-import { showToast, openAuthModal } from "../redux/authSlice";
+import { addToCart } from "../redux/cartSlice";
+import { toggleWishlist } from "../redux/wishlistSlice";
+import { showToast } from "../redux/authSlice";
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const { selectedProduct: product, loading, error } = useSelector((state) => state.products);
-  const { isAuthenticated } = useSelector((state) => state.auth);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
   const [activeImage, setActiveImage] = useState(0);
 
-  const isInWishlist = wishlistItems.some(item => (item._id || item) === product?._id);
+  const isInWishlist = wishlistItems.some(item => item._id === product?._id);
 
   const handleAddToCart = () => {
-    if (!isAuthenticated) {
-      dispatch(showToast({ message: "Please login to add items to cart", type: "error" }));
-      dispatch(openAuthModal("login"));
-      return;
-    }
-    dispatch(addToCartAsync(product._id));
+    dispatch(addToCart(product));
     dispatch(showToast({ message: "Product added to cart", type: "success" }));
   };
 
   const handleWishlistToggle = () => {
-    if (!isAuthenticated) {
-      dispatch(showToast({ message: "Please login to save wishlist", type: "error" }));
-      dispatch(openAuthModal("login"));
-      return;
-    }
-    dispatch(toggleWishlistAsync(product._id));
+    dispatch(toggleWishlist(product));
+    dispatch(showToast({
+      message: isInWishlist ? "Removed from wishlist" : "Saved to wishlist",
+      type: "success",
+    }));
   };
 
   useEffect(() => {

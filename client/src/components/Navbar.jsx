@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, Heart, ShoppingCart, Lightbulb, LogOut, LayoutDashboard } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser, openAuthModal } from "../redux/authSlice";
-import { resetCart } from "../redux/cartSlice";
-import { resetWishlist } from "../redux/wishlistSlice";
+import { clearCart } from "../redux/cartSlice";
+import { clearWishlist } from "../redux/wishlistSlice";
 
 const Navbar = () => {
 
@@ -19,8 +19,8 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser());
-      dispatch(resetCart());
-      dispatch(resetWishlist());
+      dispatch(clearCart());
+      dispatch(clearWishlist());
       navigate("/login");
     } catch (error) {
       console.error("Logout failed", error);
