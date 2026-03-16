@@ -32,7 +32,6 @@ import AdminOverview from "./admin/AdminOverview";
 import ProductUpload from "./admin/ProductUpload";
 import AdminProductList from "./admin/AdminProductList";
 import AdminCustomerList from "./admin/AdminCustomerList";
-import { fetchProducts } from "./redux/productSlice";
 import { loadCartFromStorage } from "./redux/cartSlice";
 import { loadWishlistFromStorage } from "./redux/wishlistSlice";
 
@@ -49,7 +48,6 @@ function App() {
     if (user) {
       dispatch(checkAuth());
     }
-    dispatch(fetchProducts());
     dispatch(loadCartFromStorage());
     dispatch(loadWishlistFromStorage());
   }, [dispatch, user]);
