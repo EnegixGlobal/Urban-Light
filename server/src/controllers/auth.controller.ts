@@ -89,14 +89,19 @@ export const login = async (req: Request, res: Response) => {
 //logout
 
 export const logout = async (req: Request, res: Response) => {
-  res.cookie('token', '', {
+  // To reliably clear the auth cookie in production (Render + Vercel),
+  // we must use the SAME cookie options (secure/sameSite) that were
+  // used when setting it during login/signup.
+  res.cookie("token", "", {
     httpOnly: true,
-    expires: new Date(0)
-  })
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    expires: new Date(0),
+  });
 
   res.json({
-    message: "Logged out successfully"
-  })
+    message: "Logged out successfully",
+  });
 }
 
 // Get Current User
