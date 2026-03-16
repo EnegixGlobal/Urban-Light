@@ -4,23 +4,36 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../redux/productSlice";
 import { addToCart } from "../redux/cartSlice";
 import { toggleWishlist } from "../redux/wishlistSlice";
-import { showToast } from "../redux/authSlice";
+import { showToast, openAuthModal } from "../redux/authSlice";
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const { selectedProduct: product, loading, error } = useSelector((state) => state.products);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [activeImage, setActiveImage] = useState(0);
 
   const isInWishlist = wishlistItems.some(item => item._id === product?._id);
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      dispatch(openAuthModal("login"));
+      dispatch(showToast({ message: "Please login to add items to cart", type: "error" }));
+      return;
+    }
+
     dispatch(addToCart(product));
     dispatch(showToast({ message: "Product added to cart", type: "success" }));
   };
 
   const handleWishlistToggle = () => {
+    if (!isAuthenticated) {
+      dispatch(openAuthModal("login"));
+      dispatch(showToast({ message: "Please login to manage your wishlist", type: "error" }));
+      return;
+    }
+
     dispatch(toggleWishlist(product));
     dispatch(showToast({
       message: isInWishlist ? "Removed from wishlist" : "Saved to wishlist",

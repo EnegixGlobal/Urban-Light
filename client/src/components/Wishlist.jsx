@@ -5,10 +5,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { removeFromWishlist } from "../redux/wishlistSlice";
 import { addToCart } from "../redux/cartSlice";
 import { Trash2, ShoppingCart, HeartOff } from "lucide-react";
-import { showToast } from "../redux/authSlice";
+import { showToast, openAuthModal } from "../redux/authSlice";
 
 const Wishlist = () => {
   const { items: wishlist } = useSelector((state) => state.wishlist);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const handleRemove = (id) => {
@@ -17,6 +18,12 @@ const Wishlist = () => {
   };
 
   const handleMoveToCart = (product) => {
+    if (!isAuthenticated) {
+      dispatch(openAuthModal("login"));
+      dispatch(showToast({ message: "Please login to add items to cart", type: "error" }));
+      return;
+    }
+
     dispatch(addToCart(product));
     dispatch(showToast({ message: "Added to cart", type: "success" }));
   };
