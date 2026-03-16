@@ -2,22 +2,29 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromWishlistAsync } from "../redux/wishlistSlice";
-import { addToCartAsync } from "../redux/cartSlice";
+import { removeFromWishlist } from "../redux/wishlistSlice";
+import { addToCart } from "../redux/cartSlice";
 import { Trash2, ShoppingCart, HeartOff } from "lucide-react";
-import { showToast } from "../redux/authSlice";
+import { showToast, openAuthModal } from "../redux/authSlice";
 
 const Wishlist = () => {
-  const { items: wishlist, loading } = useSelector((state) => state.wishlist);
+  const { items: wishlist } = useSelector((state) => state.wishlist);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const handleRemove = (id) => {
-    dispatch(removeFromWishlistAsync(id));
+    dispatch(removeFromWishlist(id));
     dispatch(showToast({ message: "Removed from wishlist", type: "success" }));
   };
 
   const handleMoveToCart = (product) => {
-    dispatch(addToCartAsync(product._id));
+    if (!isAuthenticated) {
+      dispatch(openAuthModal("login"));
+      dispatch(showToast({ message: "Please login to add items to cart", type: "error" }));
+      return;
+    }
+
+    dispatch(addToCart(product));
     dispatch(showToast({ message: "Added to cart", type: "success" }));
   };
 

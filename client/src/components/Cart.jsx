@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  addToCartAsync,
-  removeFromCartAsync,
-  deleteFromCartAsync,
-  fetchCart
+  addToCart,
+  removeFromCart,
+  deleteFromCart,
+  loadCartFromStorage
 } from "../redux/cartSlice";
 import { Trash2, Plus, Minus, ShoppingBag, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -15,7 +15,7 @@ const Cart = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCart());
+    dispatch(loadCartFromStorage());
   }, [dispatch]);
 
   return (
@@ -82,7 +82,7 @@ const Cart = () => {
                             <h2 className="text-xl md:text-2xl font-light tracking-tight">{product.name}</h2>
                           </div>
                           <button
-                            onClick={() => dispatch(deleteFromCartAsync(product._id))}
+                            onClick={() => dispatch(deleteFromCart(product._id))}
                             className="w-10 h-10 rounded-full flex items-center justify-center text-white/20 hover:text-red-500 hover:bg-red-500/10 transition-all"
                           >
                             <Trash2 size={18} />
@@ -92,7 +92,7 @@ const Cart = () => {
                         <div className="flex flex-wrap items-end justify-between gap-4 mt-4">
                           <div className="flex items-center gap-1 bg-black rounded-full border border-white/10 p-1">
                             <button
-                              onClick={() => dispatch(removeFromCartAsync(product._id))}
+                              onClick={() => dispatch(removeFromCart(product._id))}
                               className="w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-[#c9a27d] hover:bg-white/5 transition-all"
                             >
                               <Minus size={14} />
@@ -101,7 +101,7 @@ const Cart = () => {
                               {item.quantity}
                             </span>
                             <button
-                              onClick={() => dispatch(addToCartAsync(product._id))}
+                              onClick={() => dispatch(addToCart(product))}
                               className="w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-[#c9a27d] hover:bg-white/5 transition-all"
                             >
                               <Plus size={14} />

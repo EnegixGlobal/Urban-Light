@@ -1,71 +1,74 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/wishlist`;
+const STORAGE_KEY = "urban_light_wishlist";
 
-// Fetch wishlist from database
-export const fetchWishlist = createAsyncThunk("wishlist/fetchWishlist", async (_, { rejectWithValue }) => {
+const loadWishlistFromStorageHelper = () => {
+    if (typeof window === "undefined") return { items: [] };
     try {
-        const response = await axios.get(API_URL);
-        return response.data; // Expecting { products: [] }
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to fetch wishlist");
+        const stored = window.localStorage.getItem(STORAGE_KEY);
+        if (!stored) return { items: [] };
+        const parsed = JSON.parse(stored);
+        if (!parsed || !Array.isArray(parsed.items)) return { items: [] };
+        return { items: parsed.items };
+    } catch {
+        return { items: [] };
     }
-});
+};
 
-// Toggle wishlist in database
-export const toggleWishlistAsync = createAsyncThunk("wishlist/toggle", async (productId, { rejectWithValue }) => {
+const saveWishlistToStorageHelper = (items) => {
+    if (typeof window === "undefined") return;
     try {
-        const response = await axios.post(`${API_URL}/toggle`, { productId });
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to update wishlist");
+        const value = JSON.stringify({ items });
+        window.localStorage.setItem(STORAGE_KEY, value);
+    } catch {
+        // ignore
     }
-});
+};
 
-// Remove from wishlist
-export const removeFromWishlistAsync = createAsyncThunk("wishlist/remove", async (productId, { rejectWithValue }) => {
-    try {
-        const response = await axios.delete(`${API_URL}/${productId}`);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to remove from wishlist");
-    }
-});
+const initialLoaded = loadWishlistFromStorageHelper();
 
 const wishlistSlice = createSlice({
     name: "wishlist",
     initialState: {
-        items: [],
+        items: initialLoaded.items || [],
         loading: false,
         error: null,
     },
     reducers: {
-        resetWishlist: (state) => {
+        loadWishlistFromStorage: (state) => {
+            const loaded = loadWishlistFromStorageHelper();
+            state.items = loaded.items || [];
+            saveWishlistToStorageHelper(state.items);
+        },
+        toggleWishlist: (state, action) => {
+            const product = action.payload;
+            if (!product || !product._id) return;
+
+            const exists = state.items.some(item => item._id === product._id);
+            if (exists) {
+                state.items = state.items.filter(item => item._id !== product._id);
+            } else {
+                state.items.push(product);
+            }
+            saveWishlistToStorageHelper(state.items);
+        },
+        removeFromWishlist: (state, action) => {
+            const productId = action.payload;
+            state.items = state.items.filter(item => item._id !== productId);
+            saveWishlistToStorageHelper(state.items);
+        },
+        clearWishlist: (state) => {
             state.items = [];
-        }
-    },
-    extraReducers: (builder) => {
-        builder
-            .addCase(fetchWishlist.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(fetchWishlist.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = action.payload.products || [];
-            })
-            .addCase(fetchWishlist.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(toggleWishlistAsync.fulfilled, (state, action) => {
-                state.items = action.payload.wishlist.products || [];
-            })
-            .addCase(removeFromWishlistAsync.fulfilled, (state, action) => {
-                state.items = action.payload.products || [];
-            });
+            saveWishlistToStorageHelper(state.items);
+        },
     },
 });
 
-export const { resetWishlist } = wishlistSlice.actions;
+export const {
+    loadWishlistFromStorage,
+    toggleWishlist,
+    removeFromWishlist,
+    clearWishlist,
+} = wishlistSlice.actions;
+
 export default wishlistSlice.reducer;

@@ -31,8 +31,8 @@ import AdminOverview from "./admin/AdminOverview";
 import ProductUpload from "./admin/ProductUpload";
 import AdminProductList from "./admin/AdminProductList";
 import { fetchProducts } from "./redux/productSlice";
-import { fetchCart } from "./redux/cartSlice";
-import { fetchWishlist } from "./redux/wishlistSlice";
+import { loadCartFromStorage } from "./redux/cartSlice";
+import { loadWishlistFromStorage } from "./redux/wishlistSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -44,14 +44,9 @@ function App() {
   useEffect(() => {
     dispatch(checkAuth());
     dispatch(fetchProducts());
+    dispatch(loadCartFromStorage());
+    dispatch(loadWishlistFromStorage());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(fetchCart());
-      dispatch(fetchWishlist());
-    }
-  }, [isAuthenticated, dispatch]);
 
   return (
     <Router>

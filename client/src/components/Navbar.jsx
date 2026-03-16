@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, Heart, ShoppingCart, Lightbulb, LogOut, LayoutDashboard } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser, openAuthModal } from "../redux/authSlice";
-import { resetCart } from "../redux/cartSlice";
-import { resetWishlist } from "../redux/wishlistSlice";
+import { clearCart } from "../redux/cartSlice";
+import { clearWishlist } from "../redux/wishlistSlice";
 
 const Navbar = () => {
 
@@ -19,8 +19,8 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser());
-      dispatch(resetCart());
-      dispatch(resetWishlist());
+      dispatch(clearCart());
+      dispatch(clearWishlist());
       navigate("/login");
     } catch (error) {
       console.error("Logout failed", error);
@@ -218,10 +218,12 @@ const Navbar = () => {
                   <h3 className="text-sm mb-4">
                     CONTACT US
                   </h3>
-
                   <p className="text-sm leading-6">
-                    76-86 Manners Street <br />
-                    Wellington 6140, New Zealand
+                  1st floor Skyline building, kadru, Ranchi-834002
+                  <br />
+                  +91 9835905906
+                  <br />
+                  UrbanLightsranchi@gmail.com
                   </p>
 
                 </div>
