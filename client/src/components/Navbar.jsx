@@ -212,9 +212,7 @@ const Navbar = () => {
               {/* RIGHT CONTACT */}
 
               <div className="hidden md:flex pl-10 border-l border-[#5a4a3a] flex-col justify-end">
-
                 <div>
-
                   <h3 className="text-sm mb-4">
                     CONTACT US
                   </h3>
