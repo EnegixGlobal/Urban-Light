@@ -53,13 +53,22 @@ const productSlice = createSlice({
             .addCase(fetchProducts.fulfilled, (state, action) => {
                 state.loading = false;
                 // Normalize payload to always be an array of products.
+                let rawItems = [];
                 if (Array.isArray(action.payload)) {
-                    state.items = action.payload;
+                    rawItems = action.payload;
                 } else if (action.payload && Array.isArray(action.payload.items)) {
-                    state.items = action.payload.items;
-                } else {
-                    state.items = [];
+                    rawItems = action.payload.items;
                 }
+
+                // Deduplicate by _id to avoid the same product showing multiple times
+                const seen = new Set();
+                state.items = rawItems.filter((p) => {
+                    const id = p?._id ?? p?.id;
+                    if (!id) return true;
+                    if (seen.has(id)) return false;
+                    seen.add(id);
+                    return true;
+                });
             })
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.loading = false;
