@@ -62,7 +62,10 @@ export const checkAuth = createAsyncThunk(
 const initialState = {
     user: JSON.parse(localStorage.getItem("user")) || null,
     isAuthenticated: !!localStorage.getItem("user"),
-    loading: true,
+    // This loading flag should represent active login/signup actions,
+    // not background auth checks. Start as false so the login button
+    // isn't in a loading state on first open.
+    loading: false,
     isAuthModalOpen: false,
     authModalView: "login", // "login" or "signup"
     toast: {
@@ -146,12 +149,8 @@ const authSlice = createSlice({
             .addCase(signupUser.rejected, (state) => {
                 state.loading = false;
             })
-            // Check Auth
-            .addCase(checkAuth.pending, (state) => {
-                state.loading = true;
-            })
+            // Check Auth (background session validation only; don't affect UI loading)
             .addCase(checkAuth.fulfilled, (state, action) => {
-                state.loading = false;
                 state.isAuthenticated = true;
                 // Note: The backend route currently only returns a message.
                 // In a perfect world, it would return the user object.
@@ -162,7 +161,6 @@ const authSlice = createSlice({
                 }
             })
             .addCase(checkAuth.rejected, (state) => {
-                state.loading = false;
                 state.isAuthenticated = false;
                 state.user = null;
                 localStorage.removeItem("user");
