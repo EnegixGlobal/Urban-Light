@@ -39,7 +39,8 @@ const AdminProductList = () => {
     const filteredProducts = (products || []).filter(p => {
     const matchesSearch =
         p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.category?.toLowerCase().includes(searchTerm.toLowerCase());
+        p.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.productId?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesCategory =
         selectedCategory === "All" || p.category === selectedCategory;
@@ -109,6 +110,7 @@ const AdminProductList = () => {
                             <thead>
                                 <tr className="border-b border-white/5">
                                     <th className="px-8 py-6 text-[10px] uppercase tracking-[0.2em] text-[#c9a27d]/60 font-bold">Product Details</th>
+                                    <th className="px-8 py-6 text-[10px] uppercase tracking-[0.2em] text-[#c9a27d]/60 font-bold">Product ID</th>
                                     <th className="px-8 py-6 text-[10px] uppercase tracking-[0.2em] text-[#c9a27d]/60 font-bold">Category</th>
                                     <th className="px-8 py-6 text-[10px] uppercase tracking-[0.2em] text-[#c9a27d]/60 font-bold">Price</th>
                                     <th className="px-8 py-6 text-[10px] uppercase tracking-[0.2em] text-[#c9a27d]/60 font-bold">Stock</th>
@@ -133,9 +135,11 @@ const AdminProductList = () => {
                                                     </div>
                                                     <div>
                                                         <p className="text-white font-medium group-hover:text-[#c9a27d] transition-colors">{product.name}</p>
-                                                        <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">ID: ...{product._id ? product._id.slice(-6) : '----'}</p>
                                                     </div>
                                                 </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <span className="text-xs text-[#c9a27d] font-bold tracking-widest">{product.productId || '----'}</span>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <span className="text-xs text-white/60 bg-white/5 px-3 py-1 rounded-full">{product.category}</span>

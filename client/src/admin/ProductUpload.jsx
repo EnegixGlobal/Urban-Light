@@ -20,6 +20,7 @@ const ProductUpload = () => {
 
     const initialFormState = {
         name: "",
+        productId: "",
         description: "",
         price: "",
         oldPrice: "",
@@ -52,6 +53,7 @@ const ProductUpload = () => {
             const product = response.data?.data || {};
             setFormData({
                 name: product.name || "",
+                productId: product.productId || "",
                 description: product.description || "",
                 price: product.price || "",
                 oldPrice: product.oldPrice || "",
@@ -217,6 +219,19 @@ const ProductUpload = () => {
                                 onChange={handleChange}
                                 required
                                 placeholder="e.g., Grand Cascade Crystal Chandelier"
+                                className="w-full bg-white/5 border-b border-white/10 p-3 focus:outline-none focus:border-[#c9a27d] transition-all text-lg font-light tracking-wide text-white placeholder:text-white/10"
+                            />
+                        </div>
+
+                        <div className="space-y-6 md:col-span-2">
+                            <label className="block text-xs uppercase tracking-widest text-[#c9a27d]/60 font-medium">Product ID</label>
+                            <input
+                                type="text"
+                                name="productId"
+                                value={formData.productId}
+                                onChange={handleChange}
+                                required
+                                placeholder="e.g., UL-1001"
                                 className="w-full bg-white/5 border-b border-white/10 p-3 focus:outline-none focus:border-[#c9a27d] transition-all text-lg font-light tracking-wide text-white placeholder:text-white/10"
                             />
                         </div>

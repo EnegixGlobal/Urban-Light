@@ -9,6 +9,7 @@ export interface IReview {
 }
 
 export interface IProduct extends Document {
+    productId: string;
     name: string;
     description: string;
     price: number;
@@ -34,6 +35,12 @@ export interface IProduct extends Document {
 }
 
 const ProductSchema = new Schema<IProduct>({
+    productId: {
+        type: String,
+        required: [true, "Product ID is required"],
+        unique: true,
+        trim: true
+    },
     name: {
         type: String,
         required: [true, "Product name is required"],
