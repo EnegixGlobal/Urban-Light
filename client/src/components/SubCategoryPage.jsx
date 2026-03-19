@@ -72,8 +72,8 @@ const SubCategoryPage = ({ addToWishlist, addToCart }) => {
                     <h3 className="text-sm md:text-base font-light tracking-wide text-white group-hover:text-[#c9a27d] transition-colors duration-300 line-clamp-1">
                       {product.name}
                     </h3>
-                    <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-[#c9a27d]/50 font-medium">
-                      {product.subCategory || id}
+                    <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-[#c9a27d] font-medium">
+                      {product.subCategory || id} | {product.productId}
                     </p>
                   </div>
 

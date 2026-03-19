@@ -130,6 +130,9 @@ const ProductDetails = () => {
               <h1 className="text-5xl md:text-6xl font-light tracking-tighter leading-tight italic">
                 {product.name}
               </h1>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[#c9a27d]/80 font-bold">
+                Design ID: {product.productId}
+              </p>
             </div>
 
             <div className="flex items-baseline gap-6 border-b border-white/5 pb-8">
